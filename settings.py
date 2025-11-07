@@ -43,4 +43,11 @@ def set_level_size(level_index: int, fullscreen: bool = FULLSCREEN, scale: float
         "SCREEN_HEIGHT": screen_height
     }
     
-MENU_IMG = "Images/menuBG.jpg"
+MENU_IMG = "Images/menu.png"
+BUTTON_COLOR = (255,224,102)
+BUTTON_HOVER = (255,239,0)
+BUTTON_SHADOW = (150,150,150)
+TEXT_COLOR = (0,0,0)
+POPUP_BG = (255,255,240)
+POPUP_BORDER = (80,80,80)
+GRASS_GREEN = (190,150,0)

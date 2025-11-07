@@ -1,6 +1,5 @@
 import pygame
-from settings import set_level_size, FULLSCREEN, SCALE, MENU_IMG
-
+from settings import set_level_size, FULLSCREEN, SCALE
 class Window:
     def __init__(self, background_path: str | None = None):
         self.fullscreen = FULLSCREEN
@@ -36,7 +35,8 @@ class Window:
         if self.background_path:
             self.load_background()
 
-    def draw_background(self):
-        #Vykreslí pozadie, ak existuje
-        if self.background:
+    def draw_background(self, color=None):
+        if color:
+            self.screen.fill(color)
+        elif self.background:
             self.screen.blit(self.background, (0, 0))
