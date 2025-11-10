@@ -1,13 +1,12 @@
 import pygame
-from settings import set_level_size, FULLSCREEN, SCALE
+from settings import set_level_size, FULLSCREEN
 class Window:
     def __init__(self, background_path: str | None = None):
         self.fullscreen = FULLSCREEN
-        self.scale = SCALE
         self.background_path = background_path
 
         # zistenie rozmerov
-        rozmery = set_level_size(0, fullscreen=self.fullscreen, scale=self.scale)
+        rozmery = set_level_size(0, fullscreen=self.fullscreen)
         self.width = rozmery["SCREEN_WIDTH"]
         self.height = rozmery["SCREEN_HEIGHT"]
 
