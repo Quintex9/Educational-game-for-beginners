@@ -6,7 +6,7 @@ from showlevels import draw_showlevels
 from UI.grid import draw_grid
 from UI.console import draw_console
 from UI.panel import draw_panel
-from UI.button import draw_button
+from UI.start_button import draw_start_button
 
 
 
@@ -32,12 +32,9 @@ while running:
         draw_grid(window.screen, level_config)
         draw_console(window.screen,level_config)
         draw_panel(window.screen,level_config)
-        draw_button(window.screen,level_config)
+        draw_start_button(window.screen,level_config,mouse_pos)
 
         
-        
-
-    
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -65,7 +62,5 @@ while running:
                         elif text == "Späť":
                             state = "menu"
                             
-    
-    
     pygame.display.flip()
     clock.tick(60)
