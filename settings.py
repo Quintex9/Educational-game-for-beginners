@@ -85,4 +85,6 @@ START_BUTTON_SHADOW  = (55, 45, 42)
 START_TEXT_COLOR     = (255, 255, 240)
 BORDER         = UI_BORDER
 
+FONT_BTN = pygame.font.SysFont("Consolas", 22)
+
 
