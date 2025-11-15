@@ -35,7 +35,7 @@ while running:
         window.draw_background((131, 106, 98))
         level_config = set_level_size(level_num - 1)
         
-        draw_grid(window.screen, level_config)
+        draw_grid(window.screen, level_config,level_num)
         console_rect = draw_console(window.screen,level_config)
         
         panel_rect = draw_panel(window.screen,level_config)

@@ -17,7 +17,7 @@ def load_tileset(path, tile_width, tile_height):
 
 
 # Funkcia na vykreslenie mriežky 
-def draw_grid(screen: pygame.Surface, level_conf: dict):
+def draw_grid(screen: pygame.Surface, level_conf: dict,level_num):
     grid_size   = level_conf["GRID_SIZE"]
     cell_size   = level_conf["CELL_SIZE"]
     grid_width  = level_conf["GRID_WIDTH"]
@@ -26,13 +26,53 @@ def draw_grid(screen: pygame.Surface, level_conf: dict):
     #  Načítanie tiles z floor.png 
     tiles = load_tileset("Images/floor.png", 32, 32)
 
-    layout = [
+    layout1 = [
         [0, 1, 1, 1, 9],
         [38, 10, 10, 10, 47],
         [38, 10, 10, 10, 47],
         [38, 10, 10, 10, 47],
         [160, 161, 161, 161, 171]
     ]
+    
+    layout2 = [
+        [0, 1, 1, 1, 1, 9],
+        [38, 10, 10, 10, 10, 47],
+        [38, 10, 10, 10, 10, 47],
+        [38, 10, 10, 10, 10, 47],
+        [38, 10, 10, 10, 10, 47],
+        [160, 161, 161, 161, 161, 171]
+    ]
+    
+    layout3 = [
+        [0, 1, 1, 1, 1, 1, 9],
+        [38, 10, 10, 10, 10, 10, 47],
+        [38, 10, 10, 10, 10, 10, 47],
+        [38, 10, 10, 10, 10, 10, 47],
+        [38, 10, 10, 10, 10, 10, 47],
+        [38, 10, 10, 10, 10, 10, 47],
+        [160, 161, 161, 161, 161, 161, 171]
+    ]
+    
+    layout4 = [
+        [0, 1, 1, 1, 1, 1, 1, 9],
+        [38, 10, 10, 10, 10, 10, 10, 47],
+        [38, 10, 10, 10, 10, 10, 10, 47],
+        [38, 10, 10, 10, 10, 10, 10, 47],
+        [38, 10, 10, 10, 10, 10, 10, 47],
+        [38, 10, 10, 10, 10, 10, 10, 47],
+        [38, 10, 10, 10, 10, 10, 10, 47],
+        [160, 161, 161, 161, 161, 161, 161, 171]
+    ]
+    
+    
+    if level_num == 1:
+        layout = layout1
+    elif level_num == 2:
+        layout = layout2
+    elif level_num == 3:
+        layout = layout3
+    elif level_num == 4:
+        layout = layout4
 
     # Rám mriežky 
     grid_rect = pygame.Rect(0, 0, grid_width, grid_height)
