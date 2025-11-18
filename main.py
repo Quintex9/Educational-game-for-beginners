@@ -8,6 +8,8 @@ from UI.console import draw_console
 from UI.panel import draw_panel, panel_buttons, buttons_for_level
 from UI.start_button import draw_start_button
 from UI.draggable_button import draggableButton
+from player import Player
+from executor import execute_commands
 
 pygame.init()
 window = Window(background_path=MENU_IMG)
@@ -39,7 +41,14 @@ while running:
         console_rect = draw_console(window.screen,level_config)
         
         panel_rect = draw_panel(window.screen,level_config)
-        draw_start_button(window.screen,level_config,mouse_pos)
+        button_rect = draw_start_button(window.screen,level_config,mouse_pos)
+        
+        #PLAYER
+        cell = level_config["CELL_SIZE"]
+        px, py = player.get_position()
+        player_rect = pygame.Rect(px * cell, py * cell, cell, cell)
+        pygame.draw.rect(window.screen,(255,0,0), player_rect)
+        
         
         if not panel_buttons:
             buttons_for_level(level_num,panel_rect)
@@ -76,6 +85,7 @@ while running:
                             if text.startswith("Level"):
                                 state = text
                                 panel_buttons.clear()
+                                player = Player(0,0)
                             elif text == "Späť":
                                 state = "menu"
                               
@@ -84,6 +94,11 @@ while running:
                     if btn.start_drag((mx,my)):
                         dragging_button = btn
                         break
+                    
+                if button_rect.collidepoint(mx,my):
+                    grid_size = level_config["GRID_SIZE"]
+                    execute_commands(player,console_commands,grid_size)
+                    console_commands.clear()
         
         elif event.type == pygame.MOUSEMOTION:
             if dragging_button:
