@@ -15,31 +15,36 @@ class draggableButton:
         self.in_console = False
         
     def draw(self, screen, font, color, border_color):
-        # Normálne farby
-        base = (60, 52, 48)
-        border = (25, 22, 20)
-        shadow = (20, 18, 17)
-
-        # Hover farba (o 20% svetlejšia)
-        hover = (80, 70, 65)
+        from settings import DRAG_BUTTON_BG, DRAG_BUTTON_HOVER, DRAG_BUTTON_BORDER, DRAG_BUTTON_SHADOW
+        
+        # Moderné farby
+        base = DRAG_BUTTON_BG
+        border = DRAG_BUTTON_BORDER
+        shadow = DRAG_BUTTON_SHADOW
+        hover = DRAG_BUTTON_HOVER
 
         mx, my = pygame.mouse.get_pos()
         hovered = self.rect.collidepoint(mx, my)
 
         # TIEŇ (len ak nie je v konzole – aby nekazil layout)
         if not self.in_console:
-            shadow_rect = self.rect.move(3, 3)
-            pygame.draw.rect(screen, shadow, shadow_rect, border_radius=8)
+            shadow_rect = self.rect.move(1, 1)
+            pygame.draw.rect(screen, shadow, shadow_rect, border_radius=10)
 
-        # TELO
-        pygame.draw.rect(screen, hover if hovered else base, self.rect, border_radius=8)
+        # TELO - jednoduché bez gradientu
+        if hovered:
+            pygame.draw.rect(screen, hover, self.rect, border_radius=10)
+        else:
+            pygame.draw.rect(screen, base, self.rect, border_radius=10)
 
-        # OKRAJ
-        pygame.draw.rect(screen, border, self.rect, width=2, border_radius=8)
+        # OKRAJ - jemnejší
+        border_color_actual = (110, 140, 170) if hovered else border
+        pygame.draw.rect(screen, border_color_actual, self.rect, width=1, border_radius=10)
 
-        # TEXT
-        text = font.render(self.label, True, (230, 230, 230))
-        screen.blit(text, text.get_rect(center=self.rect.center))
+        # TEXT bez tieňa
+        text = font.render(self.label, True, (240, 245, 250))
+        text_rect = text.get_rect(center=self.rect.center)
+        screen.blit(text, text_rect)
 
 
         

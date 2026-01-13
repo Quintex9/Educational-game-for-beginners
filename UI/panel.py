@@ -2,11 +2,9 @@ import pygame
 from settings import PANEL_BG, PANEL_BORDER, FONT_BTN
 from UI.draggable_button import draggableButton
 
-
 panel_buttons = []
 
 PANEL_POS = (0, 0)
-
 
 def level1_buttons(panel_rect):
     btn_w = 150
@@ -35,7 +33,6 @@ def level1_buttons(panel_rect):
         created.append(draggableButton(x, y, btn_w, btn_h, label, cmd))
 
     return created
-
 
 def level2_buttons(panel_rect):
     btn_w = 150
@@ -67,8 +64,6 @@ def level2_buttons(panel_rect):
         created.append(draggableButton(x, y, btn_w, btn_h, label, cmd))
 
     return created
-
-
 
 def level3_buttons(panel_rect):
     btn_w = 150
@@ -122,6 +117,7 @@ def buttons_for_level(level, panel_rect):
 
 def draw_panel(screen, level_config):
     global PANEL_POS
+    from settings import PANEL_BG, PANEL_BORDER
 
     panel_h = level_config["PANEL_HEIGHT"]
     grid_h  = level_config["GRID_HEIGHT"]
@@ -133,8 +129,14 @@ def draw_panel(screen, level_config):
 
     rect = pygame.Rect(px, py, panel_w, panel_h)
 
+    # Pozadie panelu
     pygame.draw.rect(screen, PANEL_BG, rect)
-    pygame.draw.rect(screen, PANEL_BORDER, rect, width=2)
+    
+    # Okraj panelu
+    pygame.draw.rect(screen, PANEL_BORDER, rect, width=3)
+    
+    # Horný okraj pre hĺbku
+    pygame.draw.line(screen, (50, 60, 75), (px, py), (px + panel_w, py), width=2)
 
     # TLAČIDLÁ UŽ TU NEKRESLÍME – kreslím ich v main.py
     return rect

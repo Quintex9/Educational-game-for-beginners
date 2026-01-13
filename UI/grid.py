@@ -1,5 +1,5 @@
 import pygame
-from settings import BOARD_OUT, CELL_EDGE
+from settings import BOARD_OUT, CELL_EDGE, GRID_SHADOW
 
 #Funkcia na rozdelenie obrázka tilesetu
 def load_tileset(path, tile_width, tile_height):
@@ -74,8 +74,14 @@ def draw_grid(screen: pygame.Surface, level_conf: dict,level_num):
     elif level_num == 4:
         layout = layout4
 
-    # Rám mriežky 
+    # Rám mriežky s jemnejším tieňom
     grid_rect = pygame.Rect(0, 0, grid_width, grid_height)
+    
+    # Jemnejší tieň gridu - prírodnejšia farba
+    shadow_rect = grid_rect.move(5, 5)
+    pygame.draw.rect(screen, GRID_SHADOW, shadow_rect, border_radius=10)
+    
+    # Hlavný okraj gridu - prírodnejšia farba
     pygame.draw.rect(screen, BOARD_OUT, grid_rect, width=3, border_radius=10)
 
     #  Vykreslenie mriežky
@@ -91,6 +97,7 @@ def draw_grid(screen: pygame.Surface, level_conf: dict,level_num):
             else:
                 pygame.draw.rect(screen, (70, 150, 50), (x, y, cell_size, cell_size))
 
+            # Jemnejšia hranica bunky - jemnejšia farba
             pygame.draw.rect(screen, CELL_EDGE, (x, y, cell_size, cell_size), width=1)
 
     return grid_rect

@@ -47,44 +47,67 @@ def set_level_size(level_index: int, screen_w=WIDTH, screen_h=HEIGHT, fullscreen
 
 
 # ---------- Farby ----------
-MENU_IMG = "Images/menu.png"
-BUTTON_COLOR = (255, 224, 102)
-BUTTON_HOVER = (255, 239, 0)
-BUTTON_SHADOW = (150, 150, 150)
-TEXT_COLOR = (0, 0, 0)
-POPUP_BG = (255, 255, 240)
-POPUP_BORDER = (80, 80, 80)
-GRASS_GREEN = (190, 150, 0)
-BOARD_OUT = (120, 95, 90)
-CELL_EDGE = (0, 0, 0)
+MENU_IMG = "Images/menuTestBG.png"
 
-BORDER = (100, 80, 60)
+# Moderné farby pre menu a tlačidlá
+BUTTON_COLOR = (100, 150, 255)      # Modrá
+BUTTON_HOVER = (120, 170, 255)      # Svetlejšia modrá
+BUTTON_SHADOW = (60, 100, 180)      # Tmavší tieň
+BUTTON_GRADIENT_START = (120, 170, 255)
+BUTTON_GRADIENT_END = (80, 130, 220)
+TEXT_COLOR = (255, 255, 255)        # Biela
+TEXT_COLOR_DARK = (30, 30, 40)      # Tmavá pre svetlé pozadia
 
-# UI
-UI_BG = (40, 35, 33)      # tmavé telo konzoly
-UI_HEADER    = (110, 90, 85)     # horná lišta konzoly
-UI_BORDER    = (90, 70, 65)       # okraj
-UI_ACCENT    = (90, 225, 215)    # LED
+# Popup okno
+POPUP_BG = (245, 248, 255)          # Svetlo modrá
+POPUP_BORDER = (80, 120, 200)      # Modrý okraj
+POPUP_SHADOW = (20, 30, 50)         # Tmavý tieň
+
+# Grid farby - prírodnejšie farby
+GRASS_GREEN = (120, 180, 100)
+BOARD_OUT = (100, 80, 60)          # Hnedá/tehlová farba
+CELL_EDGE = (60, 50, 40)           # Jemnejšia hranica - hnedá
+GRID_BG = (45, 55, 70)             # Tmavšie pozadie gridu
+GRID_SHADOW = (30, 25, 20)         # Tmavý tieň gridu
+
+BORDER = (70, 90, 110)
+
+# UI - Modernizované farby
+UI_BG = (35, 40, 50)               # Tmavšie telo
+UI_BG_LIGHT = (45, 50, 60)         # Svetlejšie pre gradienty
+UI_HEADER = (50, 60, 75)           # Horná lišta
+UI_BORDER = (60, 75, 90)           # Okraj
+UI_ACCENT = (100, 200, 255)        # Svetlo modrá LED
+UI_ACCENT_GLOW = (150, 220, 255)   # Žiarenie LED
 
 # Konzola
-CONSOLE_BG     = UI_BG
+CONSOLE_BG = UI_BG
+CONSOLE_BG_GRADIENT = UI_BG_LIGHT
 CONSOLE_BORDER = UI_BORDER
-HEADER_BG      = UI_HEADER
-TEXT_COLOR_K   = (240, 235, 225)
-LED_ON         = UI_ACCENT
-LED_OFF        = (40, 80, 75)
+HEADER_BG = UI_HEADER
+TEXT_COLOR_K = (220, 230, 240)     # Svetlo sivá
+LED_ON = UI_ACCENT
+LED_OFF = (50, 70, 85)
+LED_GLOW = UI_ACCENT_GLOW
 
 # Panel
-PANEL_BG       = UI_BG
-PANEL_BORDER   = UI_BORDER
+PANEL_BG = UI_BG
+PANEL_BG_GRADIENT = UI_BG_LIGHT
+PANEL_BORDER = UI_BORDER
 
 # --- Tlačidlá ---
-START_BUTTON_COLOR   = (120, 100, 90)
-START_BUTTON_HOVER   = (140, 120, 110)
-START_BUTTON_SHADOW  = (55, 45, 42)
-START_TEXT_COLOR     = (255, 255, 240)
-BORDER         = UI_BORDER
+START_BUTTON_COLOR = (80, 150, 220)
+START_BUTTON_HOVER = (100, 170, 240)
+START_BUTTON_SHADOW = (40, 80, 120)
+START_TEXT_COLOR = (255, 255, 255)
+
+# Draggable tlačidlá
+DRAG_BUTTON_BG = (60, 70, 85)
+DRAG_BUTTON_HOVER = (80, 95, 115)
+DRAG_BUTTON_BORDER = (100, 120, 140)
+DRAG_BUTTON_SHADOW = (30, 35, 45)
 
 FONT_BTN = pygame.font.SysFont("Consolas", 22)
+FONT_TITLE = pygame.font.SysFont("Consolas", 36, bold=True)
 
 

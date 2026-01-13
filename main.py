@@ -21,6 +21,10 @@ state = "menu"
 dragging_button = None
 
 console_commands = []
+command_queue = []  
+command_delay = 500  # Delay medzi príkazmi v milisekundách
+last_command_time = 0  # Čas, keď bol posledný príkaz vykonaný
+executing_commands = False  # Flag, ktorý sleduje, či sa príkazy vykonávajú
 
 while running:
     mouse_pos = pygame.mouse.get_pos()
@@ -34,7 +38,8 @@ while running:
         
     elif state.startswith("Level"):
         level_num = int(state.split()[1])
-        window.draw_background((131, 106, 98))
+        # Moderné tmavé pozadie
+        window.draw_background((30, 35, 45))
         level_config = set_level_size(level_num - 1)
         
         draw_grid(window.screen, level_config,level_num)
@@ -43,11 +48,57 @@ while running:
         panel_rect = draw_panel(window.screen,level_config)
         button_rect = draw_start_button(window.screen,level_config,mouse_pos)
         
+        # Vykonáva príkazy postupne s oneskorením
+        if executing_commands and command_queue:
+            current_time = pygame.time.get_ticks()
+            if current_time - last_command_time >= command_delay:
+                # Vykonáva ďalší príkaz
+                cmd = command_queue.pop(0)
+                action = cmd.command
+                grid_size = level_config["GRID_SIZE"]
+                
+                # Získa aktuálnu pozíciu pred pohybom
+                old_x, old_y = player.get_position()
+                
+                # Vykonáva pohyb
+                if action == "move_up":
+                    player.move_up()
+                elif action == "move_down":
+                    player.move_down()
+                elif action == "move_right":
+                    player.move_right()
+                elif action == "move_left":
+                    player.move_left()
+                
+                # Kontroluje hranice a vracia, ak je mimo
+                new_x, new_y = player.get_position()
+                if not (0 <= new_x < grid_size and 0 <= new_y < grid_size):
+                    player.set_position(old_x, old_y)
+                
+                last_command_time = current_time
+                
+                # Ak nie sú žiadne ďalšie príkazy, zastaví vykonávanie
+                if not command_queue:
+                    executing_commands = False
+        
         #PLAYER
-        cell = level_config["CELL_SIZE"]
-        px, py = player.get_position()
-        player_rect = pygame.Rect(px * cell, py * cell, cell, cell)
-        pygame.draw.rect(window.screen,(255,0,0), player_rect)
+        if 'player' in locals():
+            cell = level_config["CELL_SIZE"]
+            px, py = player.get_position()
+            
+            # Získa sprite a škáluje ho na menšiu veľkosť (70% z veľkosti bunky)
+            sprite = player.get_sprite()
+            if sprite:
+                sprite_size = int(cell * 0.7)
+                scaled_sprite = pygame.transform.scale(sprite, (sprite_size, sprite_size))
+                # Centruje sprite v bunkách
+                offset = (cell - sprite_size) // 2
+                # Vykresľuje sprite na pozícii hráča (centrovaný v bunkách)
+                window.screen.blit(scaled_sprite, (px * cell + offset, py * cell + offset))
+            else:
+                # Rezerva: vykresľuje červený obdĺžnik, ak sprite nie je dostupný
+                player_rect = pygame.Rect(px * cell, py * cell, cell, cell)
+                pygame.draw.rect(window.screen, (255, 0, 0), player_rect)
         
         
         if not panel_buttons:
@@ -86,6 +137,9 @@ while running:
                                 state = text
                                 panel_buttons.clear()
                                 player = Player(0,0)
+                                # Resetuje frontu príkazov pri začatí nového levelu
+                                command_queue.clear()
+                                executing_commands = False
                             elif text == "Späť":
                                 state = "menu"
                               
@@ -96,9 +150,13 @@ while running:
                         break
                     
                 if button_rect.collidepoint(mx,my):
-                    grid_size = level_config["GRID_SIZE"]
-                    execute_commands(player,console_commands,grid_size)
-                    console_commands.clear()
+                    # Začne vykonávať príkazy postupne
+                    if console_commands and not executing_commands:
+                        command_queue = console_commands.copy()  # Kopíruje príkazy do fronty
+                        console_commands.clear()
+                        executing_commands = True
+                        # Nastaví čas na minulý, aby prvý príkaz vykonával okamžite
+                        last_command_time = pygame.time.get_ticks() - command_delay
         
         elif event.type == pygame.MOUSEMOTION:
             if dragging_button:
@@ -109,7 +167,7 @@ while running:
                 dragging_button.stop_drag()
                 
                 if console_rect.collidepoint(dragging_button.rect.center):
-                    #Kópia tlačidla
+                    #Vytvorí kópiu tlačidla
                     new_btn = draggableButton(
                         dragging_button.rect.x,
                         dragging_button.rect.y,
