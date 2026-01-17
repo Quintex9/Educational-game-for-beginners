@@ -1,5 +1,7 @@
 import pygame
+import math
 from settings import BOARD_OUT, CELL_EDGE, GRID_SHADOW
+from level_data import LEVEL_DATA
 
 #Funkcia na rozdelenie obrázka tilesetu
 def load_tileset(path, tile_width, tile_height):
@@ -99,5 +101,92 @@ def draw_grid(screen: pygame.Surface, level_conf: dict,level_num):
 
             # Jemnejšia hranica bunky - jemnejšia farba
             pygame.draw.rect(screen, CELL_EDGE, (x, y, cell_size, cell_size), width=1)
+
+    # Vykreslenie prekážok a cieľa
+    if level_num in LEVEL_DATA:
+        level_info = LEVEL_DATA[level_num]
+        cell_size = level_conf["CELL_SIZE"]
+        
+        # Načítanie obrázka prekážky
+        try:
+            obstacle_img = pygame.image.load("Images/obstacle.png").convert_alpha()
+        except:
+            obstacle_img = None
+        
+        # Vykreslenie prekážok
+        for obs_x, obs_y in level_info.get("obstacles", []):
+            if 0 <= obs_x < grid_size and 0 <= obs_y < grid_size:
+                obs_rect = pygame.Rect(
+                    obs_x * cell_size,
+                    obs_y * cell_size,
+                    cell_size,
+                    cell_size
+                )
+                # Použije obrázok prekážky, ak je dostupný
+                if obstacle_img:
+                    scaled_obstacle = pygame.transform.scale(obstacle_img, (cell_size, cell_size))
+                    screen.blit(scaled_obstacle, obs_rect)
+                else:
+                    # Rezerva: tmavá prekážka, ak obrázok nie je dostupný
+                    pygame.draw.rect(screen, (60, 40, 30), obs_rect)
+                    pygame.draw.rect(screen, (40, 25, 15), obs_rect, width=2)
+                    # Kresba X na prekážke
+                    pygame.draw.line(screen, (100, 50, 30), 
+                                   (obs_rect.left + 5, obs_rect.top + 5),
+                                   (obs_rect.right - 5, obs_rect.bottom - 5), width=3)
+                    pygame.draw.line(screen, (100, 50, 30),
+                                   (obs_rect.right - 5, obs_rect.top + 5),
+                                   (obs_rect.left + 5, obs_rect.bottom - 5), width=3)
+        
+        # Načítanie obrázka dverí a vystrihnutie posledných otvorených dverí
+        door_img = None
+        try:
+            doors_sheet = pygame.image.load("Images/portal/Doors.png").convert_alpha()
+            doors_width, doors_height = doors_sheet.get_size()
+            # Predpokladáme, že dvere sú usporiadané horizontálne (6 dverí v rade)
+            door_width = doors_width // 6
+            door_height = doors_height
+            # Vystrihneme posledné dvere (6. dvere, index 5)
+            door_rect = pygame.Rect(5 * door_width, 0, door_width, door_height)
+            door_img = doors_sheet.subsurface(door_rect).copy()
+        except Exception as e:
+            print(f"Chyba pri načítaní dverí: {e}")
+            door_img = None
+        
+        # Vykreslenie cieľa
+        goal = level_info.get("goal")
+        if goal:
+            goal_x, goal_y = goal
+            if 0 <= goal_x < grid_size and 0 <= goal_y < grid_size:
+                goal_rect = pygame.Rect(
+                    goal_x * cell_size,
+                    goal_y * cell_size,
+                    cell_size,
+                    cell_size
+                )
+                # Použije obrázok otvorených dverí, ak je dostupný
+                if door_img:
+                    scaled_door = pygame.transform.scale(door_img, (cell_size, cell_size))
+                    screen.blit(scaled_door, goal_rect)
+                else:
+                    # Rezerva: zelený cieľ, ak obrázok nie je dostupný
+                    pygame.draw.rect(screen, (50, 200, 50), goal_rect)
+                    pygame.draw.rect(screen, (30, 150, 30), goal_rect, width=3)
+                    # Hviezda na cieli
+                    center_x = goal_rect.centerx
+                    center_y = goal_rect.centery
+                    star_size = cell_size // 3
+                    points = []
+                    for i in range(10):
+                        angle = (i * math.pi) / 5
+                        if i % 2 == 0:
+                            r = star_size
+                        else:
+                            r = star_size // 2
+                        x = center_x + r * math.cos(angle)
+                        y = center_y + r * math.sin(angle)
+                        points.append((int(x), int(y)))
+                    if len(points) > 2:
+                        pygame.draw.polygon(screen, (255, 255, 100), points)
 
     return grid_rect

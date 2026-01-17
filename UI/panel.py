@@ -101,7 +101,7 @@ def level3_buttons(panel_rect):
 
 
 def buttons_for_level(level, panel_rect):
-    """Naplní globálny list panel_buttons podľa levelu (bez zmeny referencie)."""
+    #Naplní globálny list panel_buttons podľa levelu (bez zmeny referencie).
     global panel_buttons
 
     # KĽÚČOVÉ: nemeníme referenciu, len obsah

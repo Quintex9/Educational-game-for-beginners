@@ -7,8 +7,6 @@ class Player:
         self.y = start_y
         self.direction = "down"  # default smer
         self.animation_frame = 0
-        self.animation_timer = 0
-        self.animation_speed = 10  # snímky na animáciu
         
         # Načítanie sprite obrázkov
         self.sprites = {}
@@ -65,10 +63,3 @@ class Player:
         if self.direction in self.sprites and len(self.sprites[self.direction]) > 0:
             return self.sprites[self.direction][self.animation_frame]
         return None
-    
-    def update_animation(self):
-        #Aktualizuje animačný snímok
-        self.animation_timer += 1
-        if self.animation_timer >= self.animation_speed:
-            self.animation_timer = 0
-            self.animation_frame = (self.animation_frame + 1) % 4

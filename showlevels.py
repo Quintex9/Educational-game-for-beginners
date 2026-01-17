@@ -1,9 +1,8 @@
 import pygame
 from settings import (BUTTON_COLOR, BUTTON_HOVER, BUTTON_SHADOW, POPUP_BG, POPUP_BORDER, 
-                     TEXT_COLOR, TEXT_COLOR_DARK, POPUP_SHADOW)
+                     TEXT_COLOR, TEXT_COLOR_DARK)
 
 def draw_button(screen, rect, text, font, hovered):
-    """Pomocná funkcia na kreslenie tlačidla"""
     # Veľmi jemný tieň
     shadow_rect = rect.move(2, 2)
     pygame.draw.rect(screen, BUTTON_SHADOW, shadow_rect, border_radius=12)
