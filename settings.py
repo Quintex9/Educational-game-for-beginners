@@ -7,7 +7,7 @@ WIDTH, HEIGHT = info.current_w, info.current_h
 
 FULLSCREEN = False
 
-GRID_SIZES = [5, 6, 7, 8]
+GRID_SIZES = [5, 6, 5, 7, 8]
 
 def set_level_size(level_index: int, screen_w=WIDTH, screen_h=HEIGHT, fullscreen: bool = FULLSCREEN):
     grid_size = GRID_SIZES[level_index]
@@ -113,5 +113,9 @@ MOVE_COMMANDS = {
     "move_left": "LEFT",
     "move_right": "RIGHT"
 }
+
+# Možnosti pre FOR cyklus
+FOR_OPTIONS = [("FOR 2x", 2), ("FOR 3x", 3), ("FOR 4x", 4), ("FOR 5x", 5), ("FOR 6x", 6)]
+FOR_POPUP_WIDTH = 160
 
 

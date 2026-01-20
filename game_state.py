@@ -15,10 +15,13 @@ class GameState:
         self.executing_commands = False
         self.level_completed = False
         self.for_selection_active = None
+        self.if_selection_active = None  # Index príkazu IF v konzole pre výber podmienky
         self.move_selection_active = None  # Index príkazu v konzole, ktorý sa má zmeniť
         self.level_num = None
+        self.dynamic_obstacles = []  # Dynamický zoznam prekážok pre aktuálny level (môže sa meniť)
         self.show_level_info = False  # Flag pre zobrazenie info o leveli
         self.show_victory = False  # Flag pre zobrazenie výhry
+        self.next_level_num = None  # Číslo ďalšieho levelu (ak existuje)
         self.show_limit_warning = False  # Flag pre zobrazenie upozornenia o limite
         self.show_error = False  # Flag pre zobrazenie error popup
         self.error_message = ""  # Správa error popup
@@ -30,9 +33,12 @@ class GameState:
         self.executing_commands = False
         self.level_completed = False
         self.for_selection_active = None
+        self.if_selection_active = None
         self.move_selection_active = None
+        self.dynamic_obstacles = []
         self.show_level_info = False
         self.show_victory = False
+        self.next_level_num = None
         self.show_limit_warning = False
         self.show_error = False
         self.error_message = ""
@@ -46,8 +52,12 @@ class GameState:
         if level_num in LEVEL_DATA:
             start_pos = LEVEL_DATA[level_num].get("start", (0, 0))
             self.player = Player(start_pos[0], start_pos[1])
+            # Inicializuje dynamický zoznam prekážok z LEVEL_DATA
+            obstacles = LEVEL_DATA[level_num].get("obstacles", [])
+            self.dynamic_obstacles = list(obstacles)  # Kópia zoznamu
         else:
             self.player = Player(0, 0)
+            self.dynamic_obstacles = []
     
     def reset_to_menu(self):
         #Resetuje všetko pri návrate do menu

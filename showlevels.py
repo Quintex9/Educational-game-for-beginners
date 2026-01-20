@@ -26,7 +26,7 @@ def draw_showlevels(screen: pygame.Surface, mouse_pos):
     font_button = pygame.font.SysFont("Consolas", 28, bold=True)
     font_title = pygame.font.SysFont("Consolas", 38, bold=True)
 
-    popup_width, popup_height = 550, 600
+    popup_width, popup_height = 550, 700
     popup_rect = pygame.Rect(
         (screen_width - popup_width) // 2,
         (screen_height - popup_height) // 2,
@@ -52,7 +52,7 @@ def draw_showlevels(screen: pygame.Surface, mouse_pos):
     screen.blit(title_text, title_rect)
 
     # Level tlačidlá
-    level_names = ["Level 1", "Level 2", "Level 3", "Level 4"]
+    level_names = ["Level 1", "Level 2", "Level 3", "Level 4", "Level 5"]
     buttons = []
 
     for i, lvl in enumerate(level_names):

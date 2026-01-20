@@ -75,6 +75,67 @@ def level3_buttons(panel_rect):
         ("DOWN", "move_down"),
         ("LEFT", "move_left"),
         ("RIGHT", "move_right"),
+        ("IF", "if"),
+    ]
+
+    created = []
+
+    cols = 3
+    x0 = panel_rect.x + padding
+    y0 = panel_rect.y + padding
+
+    for i, (label, cmd) in enumerate(buttons):
+        c = i % cols
+        r = i // cols
+
+        x = x0 + c * (btn_w + padding)
+        y = y0 + r * (btn_h + padding)
+
+        created.append(draggableButton(x, y, btn_w, btn_h, label, cmd))
+
+    return created
+
+def level4_buttons(panel_rect):
+    btn_w = 150
+    btn_h = 50
+    padding = 10
+
+    buttons = [
+        ("UP", "move_up"),
+        ("DOWN", "move_down"),
+        ("LEFT", "move_left"),
+        ("RIGHT", "move_right"),
+        ("FOR", "for_start"),
+        ("END", "for_end"),
+        ("IF", "if")
+    ]
+
+    created = []
+
+    cols = 4
+    x0 = panel_rect.x + padding
+    y0 = panel_rect.y + padding
+
+    for i, (label, cmd) in enumerate(buttons):
+        c = i % cols
+        r = i // cols
+
+        x = x0 + c * (btn_w + padding)
+        y = y0 + r * (btn_h + padding)
+
+        created.append(draggableButton(x, y, btn_w, btn_h, label, cmd))
+
+    return created
+
+    btn_w = 150
+    btn_h = 50
+    padding = 10
+
+    buttons = [
+        ("UP", "move_up"),
+        ("DOWN", "move_down"),
+        ("LEFT", "move_left"),
+        ("RIGHT", "move_right"),
         ("FOR", "for_start"),
         ("END", "for_end"),
         ("IF", "if"),
@@ -98,8 +159,6 @@ def level3_buttons(panel_rect):
 
     return created
 
-
-
 def buttons_for_level(level, panel_rect):
     #Naplní globálny list panel_buttons podľa levelu (bez zmeny referencie).
     global panel_buttons
@@ -113,6 +172,8 @@ def buttons_for_level(level, panel_rect):
         panel_buttons.extend(level2_buttons(panel_rect))
     elif level == 3:
         panel_buttons.extend(level3_buttons(panel_rect))
+    elif level == 4:
+        panel_buttons.extend(level4_buttons(panel_rect))
 
 
 def draw_panel(screen, level_config):

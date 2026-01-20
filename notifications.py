@@ -10,12 +10,44 @@ def draw_popup(screen, title, lines, button_text="OK", width=500, height=None):
 
     screen_width, screen_height = screen.get_size()
     
+    # Fonty pre výpočet šírky textu
+    title_font = pygame.font.SysFont("Consolas", 32, bold=True)
+    text_font = pygame.font.SysFont("Consolas", 18)
+    button_font = pygame.font.SysFont("Consolas", 20, bold=True)
+    
+    # Vypočíta šírku na základe najdlhšieho textu
+    padding = 40  # Padding na oboch stranách
+    min_width = 300  # Minimálna šírka
+    
+    # Šírka titulu
+    title_width = title_font.size(title)[0]
+    
+    # Šírka najdlhšieho riadku textu
+    max_line_width = 0
+    for line in lines:
+        if line:  # Preskočí prázdne riadky
+            line_width = text_font.size(line)[0]
+            max_line_width = max(max_line_width, line_width)
+    
+    # Šírka tlačidla (text + padding)
+    button_text_width = button_font.size(button_text)[0]
+    button_width = max(120, button_text_width + 20)  # Minimálna šírka tlačidla 120
+    
+    # Najväčšia šírka z titulu, textu a tlačidla
+    max_content_width = max(title_width, max_line_width, button_width)
+    
+    # Ak nie je zadaná šírka, vypočíta ju automaticky
+    if width == 500:  # Default hodnota
+        width = max(min_width, max_content_width + padding * 2)
+    else:
+        # Ak je zadaná šírka, použije ju, ale skontroluje, či je dostatočná
+        width = max(width, max_content_width + padding * 2)
+    
     # Vypočíta výšku na základe počtu riadkov
     if height is None:
         title_height = 50
         line_height = 30
         button_height = 50
-        padding = 40
         height = title_height + len(lines) * line_height + button_height + padding * 2
     
     # Centruje popup na obrazovke
@@ -35,13 +67,11 @@ def draw_popup(screen, title, lines, button_text="OK", width=500, height=None):
     screen.blit(shadow_surf, shadow_rect)
     
     # Titul - tmavá oranžová
-    title_font = pygame.font.SysFont("Consolas", 32, bold=True)
     title_surf = title_font.render(title, True, (0,0,0))  # Tmavá oranžová
     title_rect = title_surf.get_rect(center=(popup_rect.centerx, popup_rect.y + 30))
     screen.blit(title_surf, title_rect)
     
     # Textové riadky - tmavá hnedá
-    text_font = pygame.font.SysFont("Consolas", 18)
     y_offset = popup_rect.y + 70
     for line in lines:
         text_surf = text_font.render(line, True, (0,0,0))  
@@ -92,9 +122,11 @@ def get_level_info(level_num):
             f"Na ceste sú {obstacles_count} prekážky.", "Použij príkazy UP, DOWN, LEFT, RIGHT."],
         2: ["Level 2 - FOR cykly!", "For cyklus sa používa na opakovanie príkazov.",
             "Slúži na skrátenie zápisu príkazov.", "Pretiahni FOR do konzoly a vyber počet opakovaní."],
-        3: ["Level 3 - Zložitejšia cesta!", f"Cieľ: pozícia {goal}",
-            f"Na ceste je {obstacles_count} prekážok.", "Využij FOR cykly na efektívnejšie riešenie."],
-        4: ["Level 4 - Finálny level!", f"Cieľ: pozícia {goal}",
+        3: ["Level 3 - IF podmienka", "IF sa používa na podmienkové vykonávanie príkazov.",
+            "Pomocou IF môžeš skontrolovať, či je na danom mieste prekážka.", "Použij príkazy UP, DOWN, LEFT, RIGHT, IF."],
+        4: ["Level 4 - Zložitejšia cesta!", f"Cieľ: pozícia {goal}",
+            f"Na ceste je {obstacles_count} prekážok.", "Využij FOR cykly a IF/ELSE na efektívnejšie riešenie."],
+        5: ["Level 5 - Finálny level!", f"Cieľ: pozícia {goal}",
             f"Pozor na {obstacles_count} prekážok!", "Dokážeš to?"]
     }
     
@@ -105,16 +137,29 @@ def draw_level_info_popup(screen, level_num):
     title, lines = get_level_info(level_num)
     return draw_popup(screen, title, lines, "Začať")
 
-def draw_victory_popup(screen, level_num):
+def draw_victory_popup(screen, level_num, next_level_num=None):
     """Vykreslí popup pri výhre"""
     title = f"Level {level_num} dokončený!"
-    lines = [
-        "Gratulujeme!",
-        "Úspešne si dokončil level.",
-        "",
-        "Môžeš pokračovať na ďalší level"
-    ]
-    return draw_popup(screen, title, lines, "OK")
+    
+    # Skontroluje, či existuje ďalší level
+    if next_level_num is not None:
+        lines = [
+            "Gratulujeme!",
+            "Úspešne si dokončil level.",
+            "",
+            f"Môžeš pokračovať na Level {next_level_num}"
+        ]
+        button_text = f"Level {next_level_num}"
+    else:
+        lines = [
+            "Gratulujeme!",
+            "Úspešne si dokončil všetky levely!",
+            "",
+            "Hra dokončená!"
+        ]
+        button_text = "OK"
+    
+    return draw_popup(screen, title, lines, button_text)
 
 def draw_limit_warning_popup(screen):
     """Vykreslí popup s upozornením o dosiahnutom limite príkazov"""

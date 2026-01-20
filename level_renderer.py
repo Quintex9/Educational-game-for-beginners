@@ -70,8 +70,18 @@ def draw_move_selection_popup(screen, cmd, mouse_pos):
 
 def draw_for_selection_popup(screen, cmd, mouse_pos):
     #Vykreslí popup pre výber počtu opakovaní FOR cyklu
-    options = [("FOR 2x", 2), ("FOR 3x", 3), ("FOR 4x", 4), ("FOR 5x", 5)]
-    return draw_selection_popup(screen, cmd, mouse_pos, options)
+    from settings import FOR_OPTIONS, FOR_POPUP_WIDTH
+    return draw_selection_popup(screen, cmd, mouse_pos, FOR_OPTIONS, popup_width=FOR_POPUP_WIDTH)
+
+def draw_if_selection_popup(screen, cmd, mouse_pos):
+    #Vykreslí popup pre výber podmienky IF
+    options = [
+        ("obstacle down", "obstacle_down"),
+        ("obstacle right", "obstacle_right"),
+        ("obstacle left", "obstacle_left"),
+        ("obstacle up", "obstacle_up")
+    ]
+    return draw_selection_popup(screen, cmd, mouse_pos, options, popup_width=180)
 
 def render_level(screen, game_state, level_config, mouse_pos):
 
@@ -80,7 +90,7 @@ def render_level(screen, game_state, level_config, mouse_pos):
     level_num = game_state.level_num
     
     # Vykreslí základné UI elementy
-    draw_grid(screen, level_config, level_num)
+    draw_grid(screen, level_config, level_num, game_state.dynamic_obstacles)
     console_rect = draw_console(screen, level_config)
     panel_rect = draw_panel(screen, level_config)
     button_rect = draw_start_button(screen, level_config, mouse_pos)
@@ -110,11 +120,15 @@ def render_level(screen, game_state, level_config, mouse_pos):
         cmd.in_console = True
         cmd.draw(screen, font, (190, 190, 190), (40, 40, 40))
     
-    # Zobrazí popup pre výber FOR počtu alebo pohybového príkazu
+    # Zobrazí popup pre výber FOR počtu, IF podmienky alebo pohybového príkazu
     if level_num >= 2 and game_state.for_selection_active is not None and game_state.for_selection_active < len(game_state.console_commands):
         cmd = game_state.console_commands[game_state.for_selection_active]
         if cmd.command == "for_start":
             draw_for_selection_popup(screen, cmd, mouse_pos)
+    elif level_num >= 3 and game_state.if_selection_active is not None and game_state.if_selection_active < len(game_state.console_commands):
+        cmd = game_state.console_commands[game_state.if_selection_active]
+        if cmd.command == "if":
+            draw_if_selection_popup(screen, cmd, mouse_pos)
     elif game_state.move_selection_active is not None and game_state.move_selection_active < len(game_state.console_commands):
         cmd = game_state.console_commands[game_state.move_selection_active]
         if cmd.command in ["move_up", "move_down", "move_left", "move_right"]:
@@ -125,7 +139,7 @@ def render_level(screen, game_state, level_config, mouse_pos):
     
     # Zobrazí popup okná (priorita: výhra > error > limit > info)
     popup_funcs = [
-        (game_state.show_victory, lambda: draw_victory_popup(screen, level_num)),
+        (game_state.show_victory, lambda: draw_victory_popup(screen, level_num, game_state.next_level_num)),
         (game_state.show_error, lambda: draw_error_popup(screen, game_state.error_message)),
         (game_state.show_limit_warning, lambda: draw_limit_warning_popup(screen)),
         (game_state.show_level_info, lambda: draw_level_info_popup(screen, level_num))

@@ -11,7 +11,9 @@ def _calculate_positions(commands, console_rect, indent_levels):
     start_y = console_rect.y + CONSOLE_PADDING
     
     max_indent = max(indent_levels, default=0) if indent_levels else 0
-    column_width = CONSOLE_BUTTON_WIDTH + max_indent * CONSOLE_INDENT_WIDTH + CONSOLE_COLUMN_SPACING
+    # Nájde maximálnu šírku tlačidla v príkazoch (break_obstacle má 150, ostatné 100)
+    max_button_width = max((cmd.rect.width for cmd in commands), default=CONSOLE_BUTTON_WIDTH)
+    column_width = max_button_width + max_indent * CONSOLE_INDENT_WIDTH + CONSOLE_COLUMN_SPACING
     
     current_column = 0
     row_in_column = 0
@@ -29,12 +31,14 @@ def _calculate_positions(commands, console_rect, indent_levels):
         row_in_column += 1
 
 def update_console_indentation(commands, console_rect):
-    #Aktualizuje odsadenie všetkých príkazov v konzole na základe for cyklov
+    #Aktualizuje odsadenie všetkých príkazov v konzole na základe for cyklov a IF príkazov
     indent_level = 0
     indent_levels = []
+    i = 0
     
     # Vypočíta indent_level pre všetky príkazy
-    for cmd in commands:
+    while i < len(commands):
+        cmd = commands[i]
         if cmd.command == "for_start":
             cmd.indent_level = indent_level
             indent_levels.append(indent_level)
@@ -43,9 +47,21 @@ def update_console_indentation(commands, console_rect):
             indent_level = max(0, indent_level - 1)
             cmd.indent_level = indent_level
             indent_levels.append(indent_level)
+        elif cmd.command == "if":
+            cmd.indent_level = indent_level
+            indent_levels.append(indent_level)
+            indent_level += 1
+            # Nasledujúci príkaz (break_obstacle) bude odsadený
+            if i + 1 < len(commands) and commands[i + 1].command == "break_obstacle":
+                i += 1
+                break_cmd = commands[i]
+                break_cmd.indent_level = indent_level
+                indent_levels.append(indent_level)
+                indent_level = max(0, indent_level - 1)  # Po break_obstacle sa vráti späť
         else:
             cmd.indent_level = indent_level
             indent_levels.append(indent_level)
+        i += 1
     
     _calculate_positions(commands, console_rect, indent_levels)
 
@@ -85,12 +101,17 @@ def create_console_command(dragging_button):
         dragging_button.label,
         dragging_button.command
     )
-    # Kopíruje loop_count z pôvodného tlačidla
+    # Kopíruje loop_count a condition z pôvodného tlačidla
     new_btn.loop_count = dragging_button.loop_count
+    new_btn.condition = getattr(dragging_button, 'condition', None)
     # Ak je to FOR tlačidlo, nastaví defaultný label a počet
     if new_btn.command == "for_start":
         new_btn.loop_count = 2
         new_btn.label = "FOR"
+    # Ak je to IF tlačidlo, nastaví defaultný label
+    elif new_btn.command == "if":
+        new_btn.label = "IF"
+        new_btn.condition = None
     return new_btn
 
 def validate_for_loops(commands):
@@ -177,12 +198,17 @@ def would_exceed_console_limit(commands, console_rect, level_num):
         indent_level = max(0, indent_level)
         
         max_indent = max([c.indent_level for c in commands], default=0) if commands else 0
-        column_width = CONSOLE_BUTTON_WIDTH + max_indent * CONSOLE_INDENT_WIDTH + CONSOLE_COLUMN_SPACING
+        # Zohľadní maximálnu šírku tlačidla (break_obstacle má 150)
+        max_button_width = max((cmd.rect.width for cmd in commands), default=CONSOLE_BUTTON_WIDTH) if commands else CONSOLE_BUTTON_WIDTH
+        column_width = max_button_width + max_indent * CONSOLE_INDENT_WIDTH + CONSOLE_COLUMN_SPACING
         current_column = new_index // max_commands_per_column
         x_pos = start_x + indent_level * CONSOLE_INDENT_WIDTH + current_column * column_width
     else:
-        column_width = CONSOLE_BUTTON_WIDTH + CONSOLE_COLUMN_SPACING
+        max_button_width = max((cmd.rect.width for cmd in commands), default=CONSOLE_BUTTON_WIDTH) if commands else CONSOLE_BUTTON_WIDTH
+        column_width = max_button_width + CONSOLE_COLUMN_SPACING
         column = new_index // max_commands_per_column
         x_pos = start_x + column * column_width
     
-    return x_pos + CONSOLE_BUTTON_WIDTH > console_rect.right
+    # Použije maximálnu šírku tlačidla pre kontrolu limitu
+    max_button_width = max((cmd.rect.width for cmd in commands), default=CONSOLE_BUTTON_WIDTH) if commands else CONSOLE_BUTTON_WIDTH
+    return x_pos + max_button_width > console_rect.right

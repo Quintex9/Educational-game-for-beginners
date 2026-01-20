@@ -15,6 +15,8 @@ class draggableButton:
         self.in_console = False
         self.indent_level = 0  # Úroveň odsadenia pre for cykly
         self.loop_count = 2  # Počet opakovaní pre for cyklus (defaultne 2)
+        self.condition = None  # Podmienka pre IF príkaz (napr. "obstacle_down")
+        self.break_direction = None  # Smer pre break_obstacle príkaz (down, right, left, up)
         
     def draw(self, screen, font, color, border_color):
         from settings import DRAG_BUTTON_BG, DRAG_BUTTON_HOVER, DRAG_BUTTON_BORDER, DRAG_BUTTON_SHADOW

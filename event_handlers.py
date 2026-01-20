@@ -3,7 +3,6 @@
 
 import pygame
 from UI.panel import panel_buttons
-from UI.draggable_button import draggableButton
 from console_logic import (
     expand_for_loops, 
     update_console_indentation, 
@@ -12,7 +11,7 @@ from console_logic import (
     would_exceed_console_limit,
     validate_for_loops
 )
-from notifications import draw_error_popup
+from level_data import LEVEL_DATA
 
 def _validate_for_end_command(commands, new_command):
     #Validácia pre FOR/END príkazy pri pridaní
@@ -92,6 +91,11 @@ def handle_selection_popup_click(game_state, mx, my, selection_active, command_t
                 elif command_type == "move":
                     cmd.command = value
                     cmd.label = text
+                elif command_type == "if":
+                    cmd.condition = value
+                    cmd.label = f"IF {text}"
+                    # Zväčší šírku tlačidla pre dlhší text
+                    cmd.rect.width = 190
                 return True, None
         
         # Klikol mimo popup - zatvorí výber
@@ -115,13 +119,69 @@ def handle_for_selection_click(game_state, mx, my, console_rect):
         game_state.for_selection_active = None
         return True
     
-    options = [("FOR 2x", 2), ("FOR 3x", 3), ("FOR 4x", 4), ("FOR 5x", 5)]
+    from settings import FOR_OPTIONS, FOR_POPUP_WIDTH
     clicked, _ = handle_selection_popup_click(game_state, mx, my,
-                                               game_state.for_selection_active, "for", options, 150)
+                                               game_state.for_selection_active, "for", FOR_OPTIONS, FOR_POPUP_WIDTH)
     if clicked:
         if game_state.for_selection_active is not None:
             update_console_indentation(game_state.console_commands, console_rect)
             game_state.for_selection_active = None
+        return True
+    return False
+
+def handle_if_selection_click(game_state, mx, my, console_rect):
+    #Spracuje kliknutie na IF výber popup
+    if game_state.level_num < 3 or game_state.if_selection_active is None:
+        # Kontrola kliknutia na IF príkaz v konzole
+        for i, cmd in enumerate(game_state.console_commands):
+            if cmd.rect.collidepoint(mx, my) and cmd.command == "if":
+                game_state.if_selection_active = i
+                return True
+        return False
+    
+    cmd = game_state.console_commands[game_state.if_selection_active]
+    if cmd.command != "if":
+        game_state.if_selection_active = None
+        return True
+    
+    options = [
+        ("obstacle down", "obstacle_down"),
+        ("obstacle right", "obstacle_right"),
+        ("obstacle left", "obstacle_left"),
+        ("obstacle up", "obstacle_up")
+    ]
+    clicked, selected_value = handle_selection_popup_click(game_state, mx, my,
+                                               game_state.if_selection_active, "if", options, 180)
+    if clicked:
+        if game_state.if_selection_active is not None:
+            # Kontrola, či už existuje break_obstacle príkaz za IF
+            if_index = game_state.if_selection_active
+            # Aktualizuje odsadenie po zmene šírky IF tlačidla
+            update_console_indentation(game_state.console_commands, console_rect)
+            # Ak už existuje break_obstacle hneď za IF, aktualizuje jeho smer
+            if (if_index + 1 < len(game_state.console_commands) and 
+                game_state.console_commands[if_index + 1].command == "break_obstacle"):
+                # Aktualizuje smer pre break_obstacle
+                break_cmd = game_state.console_commands[if_index + 1]
+                # Extrahuje smer z podmienky (obstacle_down -> down)
+                direction = cmd.condition.replace("obstacle_", "")
+                break_cmd.break_direction = direction
+                # Aktualizuje odsadenie znovu
+                update_console_indentation(game_state.console_commands, console_rect)
+            else:
+                # Vytvorí nový break_obstacle príkaz a vloží ho za IF
+                from UI.draggable_button import draggableButton
+                break_cmd = draggableButton(0, 0, 160, 50, "break obstacle", "break_obstacle")
+                break_cmd.condition = None
+                break_cmd.loop_count = 2
+                # Extrahuje smer z podmienky (obstacle_down -> down)
+                direction = cmd.condition.replace("obstacle_", "")
+                break_cmd.break_direction = direction
+                # Vloží za IF príkaz
+                game_state.console_commands.insert(if_index + 1, break_cmd)
+                # Aktualizuje odsadenie
+                update_console_indentation(game_state.console_commands, console_rect)
+            game_state.if_selection_active = None
         return True
     return False
 
@@ -163,6 +223,16 @@ def handle_level_events(event, game_state, console_rect, button_rect, reset_butt
         
         # Kontrola kliknutia na popup tlačidlo
         if popup_button_rect and popup_button_rect.collidepoint(mx, my):
+            # Špeciálna logika pre victory popup - presmerovanie na ďalší level
+            if game_state.show_victory and game_state.next_level_num is not None:
+                # Presmeruje na ďalší level
+                next_level = game_state.next_level_num
+                game_state.state = f"Level {next_level}"
+                panel_buttons.clear()
+                game_state.initialize_level(next_level)
+                return dragging_button, None
+            
+            # Normálne zatvorenie popup
             for flag in ['show_level_info', 'show_victory', 'show_limit_warning', 'show_error']:
                 if getattr(game_state, flag, False):
                     setattr(game_state, flag, False)
@@ -181,7 +251,9 @@ def handle_level_events(event, game_state, console_rect, button_rect, reset_butt
             game_state.command_queue.clear()
             game_state.executing_commands = False
             game_state.for_selection_active = None
+            game_state.if_selection_active = None
             game_state.move_selection_active = None
+
             game_state.show_error = False
             game_state.error_message = ""
             return dragging_button, None
@@ -204,14 +276,20 @@ def handle_level_events(event, game_state, console_rect, button_rect, reset_butt
                         dragging_button = btn
                         break
             
-            # Kontrola FOR výberu (len ak nie je popup a nie je aktívny výber pohybu)
+            # Kontrola FOR výberu (len ak nie je popup a nie je aktívny výber pohybu alebo IF)
             if (game_state.level_num >= 2 and not popup_rect and 
-                game_state.move_selection_active is None):
+                game_state.move_selection_active is None and game_state.if_selection_active is None):
                 if handle_for_selection_click(game_state, mx, my, console_rect):
                     return dragging_button, None
             
-            # Kontrola výberu pohybového príkazu (len ak nie je popup a nie je aktívny výber FOR)
-            if (not popup_rect and game_state.for_selection_active is None):
+            # Kontrola IF výberu (len ak nie je popup a nie je aktívny výber pohybu alebo FOR)
+            if (game_state.level_num >= 3 and not popup_rect and 
+                game_state.move_selection_active is None and game_state.for_selection_active is None):
+                if handle_if_selection_click(game_state, mx, my, console_rect):
+                    return dragging_button, None
+            
+            # Kontrola výberu pohybového príkazu (len ak nie je popup a nie je aktívny výber FOR alebo IF)
+            if (not popup_rect and game_state.for_selection_active is None and game_state.if_selection_active is None):
                 if handle_move_selection_click(game_state, mx, my, console_rect):
                     return dragging_button, None
             
@@ -274,8 +352,12 @@ def handle_level_events(event, game_state, console_rect, button_rect, reset_butt
                         update_console_indentation(game_state.console_commands, console_rect)
                         if new_btn.command == "for_start":
                             game_state.for_selection_active = len(game_state.console_commands) - 1
+                        elif new_btn.command == "if" and game_state.level_num >= 3:
+                            game_state.if_selection_active = len(game_state.console_commands) - 1
                     else:
                         setup_console_command_position(new_btn, console_rect, len(game_state.console_commands) - 1)
+                        if new_btn.command == "if" and game_state.level_num >= 3:
+                            game_state.if_selection_active = len(game_state.console_commands) - 1
             
             dragging_button.reset_position()
             dragging_button = None

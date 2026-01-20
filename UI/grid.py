@@ -19,7 +19,7 @@ def load_tileset(path, tile_width, tile_height):
 
 
 # Funkcia na vykreslenie mriežky 
-def draw_grid(screen: pygame.Surface, level_conf: dict,level_num):
+def draw_grid(screen: pygame.Surface, level_conf: dict, level_num, dynamic_obstacles=None):
     grid_size   = level_conf["GRID_SIZE"]
     cell_size   = level_conf["CELL_SIZE"]
     grid_width  = level_conf["GRID_WIDTH"]
@@ -72,9 +72,11 @@ def draw_grid(screen: pygame.Surface, level_conf: dict,level_num):
     elif level_num == 2:
         layout = layout2
     elif level_num == 3:
-        layout = layout3
+        layout = layout1  # Nový level 3 je 5x5, používa layout1
     elif level_num == 4:
-        layout = layout4
+        layout = layout3  # Level 4 (starý level 3) je 7x7, používa layout3
+    elif level_num == 5:
+        layout = layout4  # Level 5 (starý level 4) je 8x8, používa layout4
 
     # Rám mriežky s jemnejším tieňom
     grid_rect = pygame.Rect(0, 0, grid_width, grid_height)
@@ -113,8 +115,11 @@ def draw_grid(screen: pygame.Surface, level_conf: dict,level_num):
         except:
             obstacle_img = None
         
+        # Použije dynamický zoznam prekážok ak je poskytnutý, inak použije pôvodný z LEVEL_DATA
+        obstacles_to_draw = dynamic_obstacles if dynamic_obstacles is not None else level_info.get("obstacles", [])
+        
         # Vykreslenie prekážok
-        for obs_x, obs_y in level_info.get("obstacles", []):
+        for obs_x, obs_y in obstacles_to_draw:
             if 0 <= obs_x < grid_size and 0 <= obs_y < grid_size:
                 obs_rect = pygame.Rect(
                     obs_x * cell_size,
