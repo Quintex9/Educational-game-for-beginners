@@ -40,8 +40,8 @@ class draggableButton:
             pygame.draw.rect(screen, base, self.rect, border_radius=10)
 
         # OKRAJ tlačidla
-        border_color_actual = (110, 140, 170) if hovered else border
-        pygame.draw.rect(screen, border_color_actual, self.rect, width=1, border_radius=10)
+        border_color_actual = (80, 160, 100) if hovered else border
+        pygame.draw.rect(screen, border_color_actual, self.rect, width=2, border_radius=10)
 
         # TEXT tlačidla
         text = font.render(self.label, True, (240, 245, 250))
@@ -50,6 +50,9 @@ class draggableButton:
 
 
     def start_drag(self,mouse_pos):
+        # Príkazy v konzole sa nemôžu pretiahnuť
+        if self.in_console:
+            return False
         if self.rect.collidepoint(mouse_pos):
             self.dragging = True
             mx, my = mouse_pos

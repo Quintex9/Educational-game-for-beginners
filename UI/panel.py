@@ -136,7 +136,7 @@ def draw_panel(screen, level_config):
     pygame.draw.rect(screen, PANEL_BORDER, rect, width=3)
     
     # Horný okraj pre hĺbku
-    pygame.draw.line(screen, (50, 60, 75), (px, py), (px + panel_w, py), width=2)
+    pygame.draw.line(screen, (160, 140, 100), (px, py), (px + panel_w, py), width=2)
 
     # TLAČIDLÁ UŽ TU NEKRESLÍME – kreslím ich v main.py
     return rect

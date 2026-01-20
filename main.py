@@ -18,6 +18,15 @@ running = True
 game_state = GameState()
 dragging_button = None
 
+# Inicializácia premenných pre level
+console_rect = None
+button_rect = None
+reset_button_rect = None
+menu_button_rect = None
+popup_rect = None
+popup_button_rect = None
+buttons = []
+
 # Hlavná herná slučka
 while running:
     mouse_pos = pygame.mouse.get_pos()
@@ -57,10 +66,11 @@ while running:
                 running = False
                 
         elif game_state.state.startswith("Level"):
-            dragging_button, _ = handle_level_events(
-                event, game_state, console_rect, button_rect, reset_button_rect, menu_button_rect, 
-                dragging_button, popup_rect, popup_button_rect
-            )
+            if console_rect is not None:
+                dragging_button, _ = handle_level_events(
+                    event, game_state, console_rect, button_rect, reset_button_rect, menu_button_rect, 
+                    dragging_button, popup_rect, popup_button_rect
+                )
     
     pygame.display.flip()
     clock.tick(60)

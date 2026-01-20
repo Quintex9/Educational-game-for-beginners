@@ -79,11 +79,11 @@ def draw_grid(screen: pygame.Surface, level_conf: dict,level_num):
     # Rám mriežky s jemnejším tieňom
     grid_rect = pygame.Rect(0, 0, grid_width, grid_height)
     
-    # Jemnejší tieň gridu - prírodnejšia farba
+    # Tieň gridu - tmavá hnedá farba
     shadow_rect = grid_rect.move(5, 5)
     pygame.draw.rect(screen, GRID_SHADOW, shadow_rect, border_radius=10)
     
-    # Hlavný okraj gridu - prírodnejšia farba
+    # Hlavný okraj gridu - hnedá farba
     pygame.draw.rect(screen, BOARD_OUT, grid_rect, width=3, border_radius=10)
 
     #  Vykreslenie mriežky
@@ -99,7 +99,7 @@ def draw_grid(screen: pygame.Surface, level_conf: dict,level_num):
             else:
                 pygame.draw.rect(screen, (70, 150, 50), (x, y, cell_size, cell_size))
 
-            # Jemnejšia hranica bunky - jemnejšia farba
+            # Hranica bunky - svetlá hnedá farba
             pygame.draw.rect(screen, CELL_EDGE, (x, y, cell_size, cell_size), width=1)
 
     # Vykreslenie prekážok a cieľa

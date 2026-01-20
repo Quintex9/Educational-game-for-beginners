@@ -31,7 +31,7 @@ def draw_menu(screen: pygame.Surface, mouse_pos):
         pygame.draw.rect(screen, color, rect, border_radius=15)
         
         # Jemnejší okraj
-        border_color = (130, 180, 240) if hovered else (90, 140, 210)
+        border_color = (60, 160, 40) if hovered else (80, 140, 60)
         pygame.draw.rect(screen, border_color, rect, width=1, border_radius=15)
         
         # Text bez tieňa - čistejší vzhľad

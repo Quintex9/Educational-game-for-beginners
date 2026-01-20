@@ -20,7 +20,7 @@ def draw_console(screen: pygame.Surface, level_config: dict):
     
     # Okraj header
     pygame.draw.line(screen, CONSOLE_BORDER, (x, y + header_h), (x + console_w, y + header_h), width=3)
-    pygame.draw.line(screen, (70, 85, 100), (x, 0), (x, header_h), width=2)
+    pygame.draw.line(screen, (100, 160, 80), (x, 0), (x, header_h), width=2)
 
     # LED indikátory s žiarením 
     led_radius = 8
@@ -54,8 +54,6 @@ def draw_console(screen: pygame.Surface, level_config: dict):
     # Názov konzoly s tieňom 
     font = pygame.font.SysFont("Consolas", 24, bold=True)
     label = font.render("CONTROL PANEL", True, TEXT_COLOR_K)
-    label_shadow = font.render("CONTROL PANEL", True, (0, 0, 0))
-    screen.blit(label_shadow, (x + 115, y + 25))
     screen.blit(label, (x + 115, y + 23))
 
     #  Telo konzoly 

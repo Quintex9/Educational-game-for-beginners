@@ -50,7 +50,7 @@ def execute_single_command(game_state, cmd, level_config):
 def process_command_execution(game_state, level_config):
     # Spracuje vykonávanie príkazov s oneskorením
     # Nevykonáva príkazy, ak je zobrazený popup
-    if game_state.show_level_info or game_state.show_victory or game_state.show_limit_warning:
+    if game_state.show_level_info or game_state.show_victory or game_state.show_limit_warning or game_state.show_error:
         return
     
     if not (game_state.executing_commands and game_state.command_queue):

@@ -15,10 +15,13 @@ class GameState:
         self.executing_commands = False
         self.level_completed = False
         self.for_selection_active = None
+        self.move_selection_active = None  # Index príkazu v konzole, ktorý sa má zmeniť
         self.level_num = None
         self.show_level_info = False  # Flag pre zobrazenie info o leveli
         self.show_victory = False  # Flag pre zobrazenie výhry
         self.show_limit_warning = False  # Flag pre zobrazenie upozornenia o limite
+        self.show_error = False  # Flag pre zobrazenie error popup
+        self.error_message = ""  # Správa error popup
     
     def reset_level_state(self):
         #Resetuje stav pri zmene levelu
@@ -27,9 +30,12 @@ class GameState:
         self.executing_commands = False
         self.level_completed = False
         self.for_selection_active = None
+        self.move_selection_active = None
         self.show_level_info = False
         self.show_victory = False
         self.show_limit_warning = False
+        self.show_error = False
+        self.error_message = ""
     
     def initialize_level(self, level_num):
         #Inicializuje level s hráčom na správnej pozícii
