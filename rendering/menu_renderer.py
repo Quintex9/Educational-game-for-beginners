@@ -14,7 +14,7 @@ def _draw_buttons(screen: pygame.Surface, mouse_pos, button_texts):
         
         #Pozícia tlačidla
         btn_x = screen_width // 2 - btn_width // 2
-        btn_y = screen_height // 2 - 30 + i * 110
+        btn_y = screen_height // 2 - 30 + i * 95
         
         rect = pygame.Rect(btn_x, btn_y, btn_width, btn_height)
         hovered = rect.collidepoint(mouse_pos)
@@ -40,13 +40,27 @@ def _draw_buttons(screen: pygame.Surface, mouse_pos, button_texts):
         
     return buttons
 
+def _draw_game_title(screen: pygame.Surface):
+    screen_width, screen_height = screen.get_size()
+    font_title = pygame.font.SysFont("couriernew", 72, bold=True)
+
+    title = "GRID RUN"
+    shadow = font_title.render(title, True, (20, 45, 20))
+    text = font_title.render(title, True, (235, 255, 235))
+
+    title_rect = text.get_rect(center=(screen_width // 2, screen_height // 2 - 170))
+    screen.blit(shadow, (title_rect.x + 3, title_rect.y + 3))
+    screen.blit(text, title_rect)
+
 def draw_menu(screen: pygame.Surface, mouse_pos):
     # Hlavne menu
+    _draw_game_title(screen)
     return _draw_buttons(screen, mouse_pos, ["Start", "Koniec"])
 
 def draw_level_groups(screen: pygame.Surface, mouse_pos):
     # Vyber skupiny levelov po kliknuti na Start
-    return _draw_buttons(screen, mouse_pos, ["Začiatočník", "Pokročilý", "Spat"])
+    _draw_game_title(screen)
+    return _draw_buttons(screen, mouse_pos, ["Začiatočník", "Pokročilý", "Spät"])
 
 def draw_button(screen, rect, text, font, hovered):
     # Veľmi jemný tieň
@@ -127,7 +141,7 @@ def draw_showlevels(screen: pygame.Surface, mouse_pos, level_group):
     back_rect = pygame.Rect(0, 0, 220, 65)
     back_rect.center = (popup_rect.centerx, popup_rect.bottom - 70)
     hovered = back_rect.collidepoint(mouse_pos)
-    draw_button(screen, back_rect, "Spat", font_button, hovered)
-    buttons.append(("Spat", back_rect))
+    draw_button(screen, back_rect, "Späť", font_button, hovered)
+    buttons.append(("Spät", back_rect))
     
     return buttons

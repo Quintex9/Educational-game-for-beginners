@@ -38,7 +38,7 @@ def set_level_size(level_index: int, screen_w=WIDTH, screen_h=HEIGHT):
 
 
 # ---------- Farby ----------
-MENU_IMG = "Images/menuTestBG.png"
+MENU_IMG = "Images/MENU.jpg"
 
 BUTTON_COLOR = (100, 160, 80)      # Zelena
 BUTTON_HOVER = (120, 200, 100)     # Svetlejsia zelena

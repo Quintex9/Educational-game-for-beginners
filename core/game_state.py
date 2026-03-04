@@ -81,8 +81,6 @@ class GameState:
         if 5 <= level_num <= 8:
             self.text_mode = False
             self.used_text_mode_only = True  # Začína s True, ak prepnú na drag&drop, nastaví sa na False
-        elif level_num == 5:  # Starý level 5 (teraz už nie je, ale pre istotu)
-            self.text_mode = True
         
         if level_num in LEVEL_DATA:
             start_pos = LEVEL_DATA[level_num].get("start", (0, 0))

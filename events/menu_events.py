@@ -22,7 +22,7 @@ def handle_menu_events(event, game_state, buttons):
                     game_state.state = "levels_1_4"
                 elif text == "Pokročilý":
                     game_state.state = "levels_5_8"
-                elif text == "Spat":
+                elif text == "Spät":
                     game_state.state = "menu"
 
             elif game_state.state in ("levels_1_4", "levels_5_8"):
@@ -31,7 +31,7 @@ def handle_menu_events(event, game_state, buttons):
                     panel_buttons.clear()
                     level_num = int(text.split()[1])
                     game_state.initialize_level(level_num)
-                elif text == "Spat":
+                elif text == "Spät":
                     game_state.state = "level_groups"
     
     return False
