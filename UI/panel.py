@@ -1,137 +1,38 @@
 import pygame
-from settings import PANEL_BG, PANEL_BORDER, FONT_BTN
+from utils.settings import PANEL_BG, PANEL_BORDER
 from UI.draggable_button import draggableButton
 
 panel_buttons = []
-
 PANEL_POS = (0, 0)
 
-def level1_buttons(panel_rect):
-    btn_w = 150
-    btn_h = 50
-    padding = 10
+BTN_W = 150
+BTN_H = 50
+BTN_PADDING = 10
 
-    buttons = [
+# Level -> (columns, [(label, command), ...])
+LEVEL_PANEL_CONFIG = {
+    1: (2, [
         ("UP", "move_up"),
         ("DOWN", "move_down"),
         ("LEFT", "move_left"),
         ("RIGHT", "move_right"),
-    ]
-
-    created = []
-    cols = 2   # počet stĺpcov
-    x0 = panel_rect.x + padding
-    y0 = panel_rect.y + padding
-
-    for i, (label, cmd) in enumerate(buttons):
-        c = i % cols      # stĺpec
-        r = i // cols     # riadok
-
-        x = x0 + c * (btn_w + padding)
-        y = y0 + r * (btn_h + padding)
-
-        created.append(draggableButton(x, y, btn_w, btn_h, label, cmd))
-
-    return created
-
-def level2_buttons(panel_rect):
-    btn_w = 150
-    btn_h = 50
-    padding = 10
-
-    buttons = [
+    ]),
+    2: (3, [
         ("UP", "move_up"),
         ("DOWN", "move_down"),
         ("LEFT", "move_left"),
         ("RIGHT", "move_right"),
         ("FOR", "for_start"),
         ("END", "for_end"),
-    ]
-
-    created = []
-
-    cols = 3
-    x0 = panel_rect.x + padding
-    y0 = panel_rect.y + padding
-
-    for i, (label, cmd) in enumerate(buttons):
-        c = i % cols
-        r = i // cols
-
-        x = x0 + c * (btn_w + padding)
-        y = y0 + r * (btn_h + padding)
-
-        created.append(draggableButton(x, y, btn_w, btn_h, label, cmd))
-
-    return created
-
-def level3_buttons(panel_rect):
-    btn_w = 150
-    btn_h = 50
-    padding = 10
-
-    buttons = [
+    ]),
+    3: (3, [
         ("UP", "move_up"),
         ("DOWN", "move_down"),
         ("LEFT", "move_left"),
         ("RIGHT", "move_right"),
         ("IF", "if"),
-    ]
-
-    created = []
-
-    cols = 3
-    x0 = panel_rect.x + padding
-    y0 = panel_rect.y + padding
-
-    for i, (label, cmd) in enumerate(buttons):
-        c = i % cols
-        r = i // cols
-
-        x = x0 + c * (btn_w + padding)
-        y = y0 + r * (btn_h + padding)
-
-        created.append(draggableButton(x, y, btn_w, btn_h, label, cmd))
-
-    return created
-
-def level4_buttons(panel_rect):
-    btn_w = 150
-    btn_h = 50
-    padding = 10
-
-    buttons = [
-        ("UP", "move_up"),
-        ("DOWN", "move_down"),
-        ("LEFT", "move_left"),
-        ("RIGHT", "move_right"),
-        ("FOR", "for_start"),
-        ("END", "for_end"),
-        ("IF", "if")
-    ]
-
-    created = []
-
-    cols = 4
-    x0 = panel_rect.x + padding
-    y0 = panel_rect.y + padding
-
-    for i, (label, cmd) in enumerate(buttons):
-        c = i % cols
-        r = i // cols
-
-        x = x0 + c * (btn_w + padding)
-        y = y0 + r * (btn_h + padding)
-
-        created.append(draggableButton(x, y, btn_w, btn_h, label, cmd))
-
-    return created
-
-    btn_w = 150
-    btn_h = 50
-    padding = 10
-
-    buttons = [
+    ]),
+    4: (3, [
         ("UP", "move_up"),
         ("DOWN", "move_down"),
         ("LEFT", "move_left"),
@@ -139,50 +40,78 @@ def level4_buttons(panel_rect):
         ("FOR", "for_start"),
         ("END", "for_end"),
         ("IF", "if"),
-        ("ELSE", "else"),
-    ]
+    ]),
+    5: (3, [
+        ("UP", "move_up"),
+        ("DOWN", "move_down"),
+        ("LEFT", "move_left"),
+        ("RIGHT", "move_right"),
+        ("FOR", "for_start"),
+        ("END", "for_end"),
+    ]),
+    6: (3, [
+        ("UP", "move_up"),
+        ("DOWN", "move_down"),
+        ("LEFT", "move_left"),
+        ("RIGHT", "move_right"),
+        ("FOR", "for_start"),
+        ("END", "for_end"),
+        ("IF", "if"),
+    ]),
+    7: (3, [
+        ("UP", "move_up"),
+        ("DOWN", "move_down"),
+        ("LEFT", "move_left"),
+        ("RIGHT", "move_right"),
+        ("FOR", "for_start"),
+        ("END", "for_end"),
+        ("IF", "if"),
+    ]),
+    8: (3, [
+        ("UP", "move_up"),
+        ("DOWN", "move_down"),
+        ("LEFT", "move_left"),
+        ("RIGHT", "move_right"),
+        ("FOR", "for_start"),
+        ("END", "for_end"),
+        ("IF", "if"),
+    ]),
+}
 
+
+def _build_buttons(panel_rect, cols, items):
     created = []
+    x0 = panel_rect.x + BTN_PADDING
+    y0 = panel_rect.y + BTN_PADDING
 
-    cols = 4
-    x0 = panel_rect.x + padding
-    y0 = panel_rect.y + padding
-
-    for i, (label, cmd) in enumerate(buttons):
+    for i, (label, cmd) in enumerate(items):
         c = i % cols
         r = i // cols
-
-        x = x0 + c * (btn_w + padding)
-        y = y0 + r * (btn_h + padding)
-
-        created.append(draggableButton(x, y, btn_w, btn_h, label, cmd))
+        x = x0 + c * (BTN_W + BTN_PADDING)
+        y = y0 + r * (BTN_H + BTN_PADDING)
+        created.append(draggableButton(x, y, BTN_W, BTN_H, label, cmd))
 
     return created
+
 
 def buttons_for_level(level, panel_rect):
-    #Naplní globálny list panel_buttons podľa levelu (bez zmeny referencie).
     global panel_buttons
-
-    # KĽÚČOVÉ: nemeníme referenciu, len obsah
     panel_buttons.clear()
 
-    if level == 1:
-        panel_buttons.extend(level1_buttons(panel_rect))
-    elif level == 2:
-        panel_buttons.extend(level2_buttons(panel_rect))
-    elif level == 3:
-        panel_buttons.extend(level3_buttons(panel_rect))
-    elif level == 4:
-        panel_buttons.extend(level4_buttons(panel_rect))
+    config = LEVEL_PANEL_CONFIG.get(level)
+    if not config:
+        return
+
+    cols, items = config
+    panel_buttons.extend(_build_buttons(panel_rect, cols, items))
 
 
 def draw_panel(screen, level_config):
     global PANEL_POS
-    from settings import PANEL_BG, PANEL_BORDER
 
     panel_h = level_config["PANEL_HEIGHT"]
-    grid_h  = level_config["GRID_HEIGHT"]
-    grid_w  = level_config["GRID_WIDTH"]
+    grid_h = level_config["GRID_HEIGHT"]
+    grid_w = level_config["GRID_WIDTH"]
     panel_w = grid_w + level_config["CONSOLE_WIDTH"]
 
     PANEL_POS = (0, grid_h)
@@ -190,14 +119,8 @@ def draw_panel(screen, level_config):
 
     rect = pygame.Rect(px, py, panel_w, panel_h)
 
-    # Pozadie panelu
     pygame.draw.rect(screen, PANEL_BG, rect)
-    
-    # Okraj panelu
     pygame.draw.rect(screen, PANEL_BORDER, rect, width=3)
-    
-    # Horný okraj pre hĺbku
     pygame.draw.line(screen, (160, 140, 100), (px, py), (px + panel_w, py), width=2)
 
-    # TLAČIDLÁ UŽ TU NEKRESLÍME – kreslím ich v main.py
     return rect

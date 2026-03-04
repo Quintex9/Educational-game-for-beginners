@@ -18,17 +18,25 @@ class draggableButton:
         self.condition = None  # Podmienka pre IF príkaz (napr. "obstacle_down")
         self.break_direction = None  # Smer pre break_obstacle príkaz (down, right, left, up)
         
-    def draw(self, screen, font, color, border_color):
-        from settings import DRAG_BUTTON_BG, DRAG_BUTTON_HOVER, DRAG_BUTTON_BORDER, DRAG_BUTTON_SHADOW
+    def draw(self, screen, font, color, border_color, disabled=False):
+        from utils.settings import DRAG_BUTTON_BG, DRAG_BUTTON_HOVER, DRAG_BUTTON_BORDER, DRAG_BUTTON_SHADOW
         
         # farby
-        base = DRAG_BUTTON_BG
-        border = DRAG_BUTTON_BORDER
-        shadow = DRAG_BUTTON_SHADOW
-        hover = DRAG_BUTTON_HOVER
+        if disabled:
+            base = (60, 60, 60)  # Tmavšia farba pre disabled
+            border = (40, 40, 40)  # Tmavší okraj
+            shadow = (30, 30, 30)  # Tmavší tieň
+            hover = (60, 60, 60)  # Žiadny hover efekt
+            text_color = (120, 120, 120)  # Sivá farba textu
+        else:
+            base = DRAG_BUTTON_BG
+            border = DRAG_BUTTON_BORDER
+            shadow = DRAG_BUTTON_SHADOW
+            hover = DRAG_BUTTON_HOVER
+            text_color = (240, 245, 250)
 
         mx, my = pygame.mouse.get_pos()
-        hovered = self.rect.collidepoint(mx, my)
+        hovered = self.rect.collidepoint(mx, my) and not disabled
 
         # TIEŇ (len ak nie je v konzole – aby nekazil layout)
         if not self.in_console:
@@ -36,17 +44,17 @@ class draggableButton:
             pygame.draw.rect(screen, shadow, shadow_rect, border_radius=10)
 
         # TELO tlačidla
-        if hovered:
+        if hovered and not disabled:
             pygame.draw.rect(screen, hover, self.rect, border_radius=10)
         else:
             pygame.draw.rect(screen, base, self.rect, border_radius=10)
 
         # OKRAJ tlačidla
-        border_color_actual = (80, 160, 100) if hovered else border
+        border_color_actual = (80, 160, 100) if (hovered and not disabled) else border
         pygame.draw.rect(screen, border_color_actual, self.rect, width=2, border_radius=10)
 
         # TEXT tlačidla
-        text = font.render(self.label, True, (240, 245, 250))
+        text = font.render(self.label, True, text_color)
         text_rect = text.get_rect(center=self.rect.center)
         screen.blit(text, text_rect)
 

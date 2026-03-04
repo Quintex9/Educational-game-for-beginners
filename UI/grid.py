@@ -1,7 +1,8 @@
 import pygame
 import math
-from settings import BOARD_OUT, CELL_EDGE, GRID_SHADOW
-from level_data import LEVEL_DATA
+from utils.settings import BOARD_OUT, CELL_EDGE, GRID_SHADOW
+from game_logic.level_data import LEVEL_DATA
+from utils.paths import resource_path
 
 #Funkcia na rozdelenie obrázka tilesetu
 def load_tileset(path, tile_width, tile_height):
@@ -17,6 +18,17 @@ def load_tileset(path, tile_width, tile_height):
 
     return tiles
 
+def build_layout(grid_size):
+    """Vytvorí základný layout pre ľubovoľnú veľkosť mriežky."""
+    if grid_size < 2:
+        return [[0]]
+
+    top_row = [0] + [1] * (grid_size - 2) + [9]
+    middle_row = [38] + [10] * (grid_size - 2) + [47]
+    bottom_row = [160] + [161] * (grid_size - 2) + [171]
+    middle_rows = [middle_row[:] for _ in range(grid_size - 2)]
+    return [top_row] + middle_rows + [bottom_row]
+
 
 # Funkcia na vykreslenie mriežky 
 def draw_grid(screen: pygame.Surface, level_conf: dict, level_num, dynamic_obstacles=None):
@@ -26,57 +38,9 @@ def draw_grid(screen: pygame.Surface, level_conf: dict, level_num, dynamic_obsta
     grid_height = level_conf["GRID_HEIGHT"]
 
     #  Načítanie tiles z floor.png 
-    tiles = load_tileset("Images/floor.png", 32, 32)
+    tiles = load_tileset(resource_path("Images/floor.png"), 32, 32)
 
-    layout1 = [
-        [0, 1, 1, 1, 9],
-        [38, 10, 10, 10, 47],
-        [38, 10, 10, 10, 47],
-        [38, 10, 10, 10, 47],
-        [160, 161, 161, 161, 171]
-    ]
-    
-    layout2 = [
-        [0, 1, 1, 1, 1, 9],
-        [38, 10, 10, 10, 10, 47],
-        [38, 10, 10, 10, 10, 47],
-        [38, 10, 10, 10, 10, 47],
-        [38, 10, 10, 10, 10, 47],
-        [160, 161, 161, 161, 161, 171]
-    ]
-    
-    layout3 = [
-        [0, 1, 1, 1, 1, 1, 9],
-        [38, 10, 10, 10, 10, 10, 47],
-        [38, 10, 10, 10, 10, 10, 47],
-        [38, 10, 10, 10, 10, 10, 47],
-        [38, 10, 10, 10, 10, 10, 47],
-        [38, 10, 10, 10, 10, 10, 47],
-        [160, 161, 161, 161, 161, 161, 171]
-    ]
-    
-    layout4 = [
-        [0, 1, 1, 1, 1, 1, 1, 9],
-        [38, 10, 10, 10, 10, 10, 10, 47],
-        [38, 10, 10, 10, 10, 10, 10, 47],
-        [38, 10, 10, 10, 10, 10, 10, 47],
-        [38, 10, 10, 10, 10, 10, 10, 47],
-        [38, 10, 10, 10, 10, 10, 10, 47],
-        [38, 10, 10, 10, 10, 10, 10, 47],
-        [160, 161, 161, 161, 161, 161, 161, 171]
-    ]
-    
-    
-    if level_num == 1:
-        layout = layout1
-    elif level_num == 2:
-        layout = layout2
-    elif level_num == 3:
-        layout = layout1  # Nový level 3 je 5x5, používa layout1
-    elif level_num == 4:
-        layout = layout3  # Level 4 (starý level 3) je 7x7, používa layout3
-    elif level_num == 5:
-        layout = layout4  # Level 5 (starý level 4) je 8x8, používa layout4
+    layout = build_layout(grid_size)
 
     # Rám mriežky s jemnejším tieňom
     grid_rect = pygame.Rect(0, 0, grid_width, grid_height)
@@ -111,7 +75,7 @@ def draw_grid(screen: pygame.Surface, level_conf: dict, level_num, dynamic_obsta
         
         # Načítanie obrázka prekážky
         try:
-            obstacle_img = pygame.image.load("Images/obstacle.png").convert_alpha()
+            obstacle_img = pygame.image.load(resource_path("Images/obstacle.png")).convert_alpha()
         except:
             obstacle_img = None
         
@@ -146,7 +110,7 @@ def draw_grid(screen: pygame.Surface, level_conf: dict, level_num, dynamic_obsta
         # Načítanie obrázka dverí a vystrihnutie posledných otvorených dverí
         door_img = None
         try:
-            doors_sheet = pygame.image.load("Images/portal/Doors.png").convert_alpha()
+            doors_sheet = pygame.image.load(resource_path("Images/portal/Doors.png")).convert_alpha()
             doors_width, doors_height = doors_sheet.get_size()
             # Predpokladáme, že dvere sú usporiadané horizontálne (6 dverí v rade)
             door_width = doors_width // 6

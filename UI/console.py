@@ -1,6 +1,6 @@
 import pygame
-from settings import (CONSOLE_BG, CONSOLE_BORDER, HEADER_BG, 
-                     LED_OFF, LED_ON, LED_GLOW, TEXT_COLOR_K, UI_ACCENT)
+from utils.settings import (CONSOLE_BG, CONSOLE_BORDER, HEADER_BG, 
+                     LED_OFF, LED_ON, LED_GLOW, TEXT_COLOR_K)
 
 def draw_console(screen: pygame.Surface, level_config: dict):
     grid_w = level_config["GRID_WIDTH"]
