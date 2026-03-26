@@ -8,6 +8,7 @@ from game_logic.console_logic import update_console_indentation, setup_console_c
 from UI.level_info import draw_level_info_popup
 from UI.stars import draw_victory_popup, draw_stars_info_popup
 from rendering.popups import draw_limit_warning_popup, draw_error_popup
+from utils.popup_position import compute_selection_popup_rect
 
 def draw_player(screen,player, level_config):
     #Vykreslí hráča na obrazovku
@@ -34,11 +35,11 @@ def draw_player(screen,player, level_config):
 def draw_selection_popup(screen, cmd, mouse_pos, options, popup_width=150):
     #Generická funkcia pre vykreslenie popup výberu
     popup_height = len(options) * 40 + 10
-    popup_rect = pygame.Rect(
-        cmd.rect.x + cmd.rect.width + 10,
-        cmd.rect.y,
+    popup_rect = compute_selection_popup_rect(
+        cmd.rect,
         popup_width,
-        popup_height
+        popup_height,
+        screen.get_rect(),
     )
     pygame.draw.rect(screen, (140, 180, 120), popup_rect, border_radius=8)
     pygame.draw.rect(screen, (80, 140, 60), popup_rect, width=2, border_radius=8)
@@ -117,13 +118,26 @@ def draw_text_console(screen, game_state, console_rect):
         # Vypočíta odsadenie pre tento riadok
         indent_level = 0
         stripped_line = line.lstrip()
-        # Počíta počet "for" pred aktuálnym riadkom (vrátane neukončených)
-        for j in range(i):
-            prev_line = lines[j].strip().lower()
-            if prev_line.startswith("for"):
+        
+        # Ak je aktuálny riadok "end", nemá odsadenie
+        if stripped_line.lower() == "end":
+            indent_level = 0
+        else:
+            # Počíta počet "for" pred aktuálnym riadkom (vrátane neukončených).
+            for j in range(i):
+                prev_line = lines[j].strip().lower()
+                if prev_line.startswith("for"):
+                    indent_level += 1
+                elif prev_line == "end":
+                    indent_level = max(0, indent_level - 1)
+
+            # IF vetva: "break obstacle" je odsadený o +1 iba ak je priamo pod IF.
+            if (
+                stripped_line.lower() == "break obstacle"
+                and i > 0
+                and lines[i - 1].strip().lower().startswith("if obstacle ")
+            ):
                 indent_level += 1
-            elif prev_line == "end":
-                indent_level = max(0, indent_level - 1)
         
         # Vykreslí odsadenie
         indent_x = text_area_rect.x + padding + indent_level * indent_size
@@ -279,4 +293,4 @@ def render_level(screen, game_state, level_config, mouse_pos):
     popup_rect, popup_button_rect = next((f() for condition, f in popup_funcs if condition), (None, None))
     
     # Vracia pôvodný console_rect (celá oblasť) pre event handlery
-    return console_rect, button_rect, reset_button_rect, menu_button_rect, popup_rect, popup_button_rect, mode_toggle_button_rect, stars_info_button_rect
+    return commands_console_rect, button_rect, reset_button_rect, menu_button_rect, popup_rect, popup_button_rect, mode_toggle_button_rect, stars_info_button_rect

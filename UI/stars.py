@@ -28,16 +28,16 @@ def calculate_stars(game_state):
         return 1
 
     if level_num == 2:
-        if has_for and command_count <= 8 and reset_count == 0:
+        if has_for and command_count <= 14 and reset_count == 0:
             return 3
-        if (has_for and command_count <= 12) or (not has_for and command_count <= 15):
+        if (has_for and command_count <= 19) or (not has_for and command_count <= 20):
             return 2
         return 1
 
     if level_num == 3:
         if has_if and command_count <= 10 and reset_count == 0:
             return 3
-        if (has_if and command_count <= 15) or (not has_if and command_count <= 20):
+        if (has_if and command_count <= 15):
             return 2
         return 1
 
@@ -102,7 +102,7 @@ def draw_stars_info_popup(screen, level_num):
         ]
     elif level_num == 2:
         lines = [
-            "⭐ ⭐ ⭐ - FOR cyklus + <=8 prikazov",
+            "⭐ ⭐ ⭐ - FOR cyklus + <=14 prikazov",
             "⭐ ⭐ - FOR + <=12 prikazov",
             "   alebo bez FOR + <=15 prikazov",
             "⭐ - Viac prikazov",

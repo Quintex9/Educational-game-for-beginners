@@ -98,6 +98,13 @@ CONSOLE_BUTTON_HEIGHT = 50
 CONSOLE_COLUMN_SPACING = 20
 CONSOLE_INDENT_WIDTH = 30
 CONSOLE_PADDING = 20
+# Stabilna sirka pre vypocet stlpcov v konzole.
+# Musi pokryt najdlhsi prikaz (napr. "IF obstacle right" ma sirku 190).
+CONSOLE_LAYOUT_BUTTON_WIDTH = 190
+# Stabilny pocet indent krokov rezervovanych pre layout.
+# Levely nepodporuju vnoreny FOR, takze maximalny prakticky indent je 2
+# (for body + break obstacle pod IF).
+CONSOLE_LAYOUT_MAX_INDENT = 2
 
 # Mapovanie pohybovych prikazov
 MOVE_COMMANDS = {
@@ -111,5 +118,5 @@ MOVE_COMMANDS = {
 FOR_OPTIONS = [("FOR 2x", 2), ("FOR 3x", 3), ("FOR 4x", 4), ("FOR 5x", 5), ("FOR 6x", 6)]
 FOR_POPUP_WIDTH = 160
 
-# Limit znakov pre textovu konzolu
-TEXT_CONSOLE_MAX_CHARS = 7
+# Limit znakov pre 1 riadok v textovej konzole
+TEXT_CONSOLE_MAX_CHARS = 20

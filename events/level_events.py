@@ -169,6 +169,9 @@ def handle_level_events(event, game_state, console_rect, button_rect, reset_butt
 
         # START click handling
         if (button_rect.collidepoint(mx, my) and
+            game_state.for_selection_active is None and
+            game_state.if_selection_active is None and
+            game_state.move_selection_active is None and
             not game_state.executing_commands and not game_state.level_completed):
             if _handle_start_click(game_state):
                 return dragging_button, None
