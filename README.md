@@ -1,8 +1,8 @@
-# Hra BC
+# GRID RUN
 
 ## O hre
 
-**Hra BC** je logická hra s prvkami programovania určená pre deti a začiatočníkov.  
+**GRID RUN** je logická hra s prvkami programovania určená pre deti a začiatočníkov.  
 Cieľom hry je doviesť postavičku k východu pomocou príkazov.
 
 V **leveloch 1–4** hráč pracuje s príkazmi pomocou systému **drag & drop**. K dispozícii má základné pohybové príkazy a neskôr aj príkazy `FOR` a `IF`.  
