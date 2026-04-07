@@ -55,12 +55,12 @@ def _draw_game_title(screen: pygame.Surface):
 def draw_menu(screen: pygame.Surface, mouse_pos):
     # Hlavne menu
     _draw_game_title(screen)
-    return _draw_buttons(screen, mouse_pos, ["Start", "Koniec"])
+    return _draw_buttons(screen, mouse_pos, ["Štart", "Koniec"])
 
 def draw_level_groups(screen: pygame.Surface, mouse_pos):
     # Vyber skupiny levelov po kliknuti na Start
     _draw_game_title(screen)
-    return _draw_buttons(screen, mouse_pos, ["Začiatočník", "Pokročilý", "Spät"])
+    return _draw_buttons(screen, mouse_pos, ["Začiatočník", "Pokročilý", "Späť"])
 
 def draw_button(screen, rect, text, font, hovered):
     # Veľmi jemný tieň
@@ -142,6 +142,6 @@ def draw_showlevels(screen: pygame.Surface, mouse_pos, level_group):
     back_rect.center = (popup_rect.centerx, popup_rect.bottom - 70)
     hovered = back_rect.collidepoint(mouse_pos)
     draw_button(screen, back_rect, "Späť", font_button, hovered)
-    buttons.append(("Spät", back_rect))
+    buttons.append(("Späť", back_rect))
     
     return buttons

@@ -17,20 +17,20 @@ def get_level_info(level_num):
         1: [
             "Vítaj v prvom leveli!",
             "Tvoj cieľ je prejsť dverami.",
-            f"Na ceste sú {obstacles_count} prekazky.",
+            f"Na ceste sú {obstacles_count} prekážky.",
             "Použi príkazy UP, DOWN, LEFT, RIGHT.",
         ],
         2: [
-            "Level 2 - FOR cykly!",
+            "Level 2 - FOR cyklus!",
             "FOR cyklus sa používa na opakovanie príkazov.",
             "Slúži na skrátenie zápisu príkazov.",
             "Pretiahni FOR do konzoly a vyber počet opakovaní.",
         ],
         3: [
             "Level 3 - IF podmienka",
-            "IF sa používa na podmienkove vykonávanie príkazov.",
-            "Pomocou IF môžeš skontrolovať prekážku pred hráčom.",
-            "Použi príkazy UP, DOWN, LEFT, RIGHT, IF.",
+            "IF sa používa na podmienené vykonávanie príkazov.",
+            "Pomocou IF môžeš skontrolovať, či je pred hráčom prekážka.",
+            "Použi príkazy UP, DOWN, LEFT, RIGHT a IF.",
         ],
         4: [
             "Level 4 - Zložitejšia cesta!",
@@ -40,24 +40,30 @@ def get_level_info(level_num):
         5: [
             "Level 5 - Prvý pokročilý level!",
             f"Pozor na {obstacles_count} prekážok!",
-            "Dokážes to?",
+            "Začínaš v textovej konzole.",
+            "Ak chceš, prepni sa na DRAG.",
+            "Späť sa vrátiš tlačidlom TEXT.",
         ],
         6: [
             "Level 6 - Pokročilá logika",
             f"Na mape je {obstacles_count} prekážok.",
-            "Kombinuj FOR a IF pre čisté riešenie.",
+            "Začínaš v textovej konzole.",
+            "Ak chceš, prepni sa na DRAG.",
+            "Späť sa vrátiš tlačidlom TEXT.",
         ],
         7: [
             "Level 7 - Hustý labyrint",
             f"Čaká ťa {obstacles_count} prekážok.",
-            "Planuj dopredu, každý príkaz sa ráta.",
-            "Skús minimalizovať počeť resetov.",
+            "Začínaš v textovej konzole.",
+            "Ak chceš, prepni sa na DRAG.",
+            "Späť sa vrátiš tlačidlom TEXT.",
         ],
         8: [
             "Level 8 - Finále",
             f"Posledná mapa má {obstacles_count} prekážok.",
-            "Použi najlepšiu kombináciu FOR + IF + text mode.",
-            "Dokaž, že más GRID RUN pod kontrolou!",
+            "Začínaš v textovej konzole.",
+            "Ak chceš, prepni sa na DRAG.",
+            "Späť sa vrátiš tlačidlom TEXT.",
         ],
     }
 

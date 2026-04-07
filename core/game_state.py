@@ -18,7 +18,7 @@ class GameState:
         self.if_selection_active = None  # Index príkazu IF v konzole pre výber podmienky
         self.move_selection_active = None  # Index príkazu v konzole, ktorý sa má zmeniť
         self.level_num = None
-        self.dynamic_obstacles = []  # Dynamický zoznam prekážok pre aktuálny level (môže sa meniť)
+        self.dynamic_obstacles = []  # Dynamický zoznam prekážok pre aktuálny level 
         self.show_level_info = False  # Flag pre zobrazenie info o leveli
         self.show_victory = False  # Flag pre zobrazenie výhry
         self.next_level_num = None  # Číslo ďalšieho levelu (ak existuje)
@@ -77,10 +77,10 @@ class GameState:
         self.reset_level_state()
         self.show_level_info = True  # Zobrazí info popup pri spustení levelu
         
-        # Pre levely 5-8: defaultne drag&drop režim
+        # Pre levely 5-8: defaultne textový režim
         if 5 <= level_num <= 8:
-            self.text_mode = False
-            self.used_text_mode_only = True  # Začína s True, ak prepnú na drag&drop, nastaví sa na False
+            self.text_mode = True
+            self.used_text_mode_only = True  # Začína s True; ak prepnú na drag&drop, nastaví sa na False
         
         if level_num in LEVEL_DATA:
             start_pos = LEVEL_DATA[level_num].get("start", (0, 0))

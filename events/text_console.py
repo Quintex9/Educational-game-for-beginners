@@ -57,16 +57,16 @@ def validate_text_command(text, line_index, all_lines):
     if not text:
         return True, None
 
-    error_suffix = "\n\nMozes resetovat konzolu\nalebo vymazat obsah pomocou BACKSPACE."
+    error_suffix = "\n\nMôžeš resetovať konzolu\nalebo vymazať obsah pomocou BACKSPACE."
 
     if text.startswith("for"):
         count = _parse_for_count(text)
         if count is None:
-            return False, f"Neplatny FOR prikaz!\n\nPouzi format: for 2x az for 6x{error_suffix}"
+            return False, f"Neplatný FOR príkaz!\n\nPouži format: for 2x až for 6x{error_suffix}"
         if count < 2 or count > 6:
-            return False, f"Neplatny pocet opakovani FOR: {count}\n\nPovolene hodnoty: 2-6{error_suffix}"
+            return False, f"Neplatný počet opakovaní FOR: {count}\n\nPovolené hodnoty: 2-6{error_suffix}"
         if _count_for_loops(all_lines, line_index) > 0:
-            return False, f"Vnorene FOR cykly nie su povolene!{error_suffix}"
+            return False, f"Vnorené FOR cykly nie sú povolené!{error_suffix}"
         return True, None
 
     if text.startswith("if"):
@@ -74,7 +74,7 @@ def validate_text_command(text, line_index, all_lines):
         if condition is None:
             return (
                 False,
-                "Neplatny IF prikaz!\n\nPouzi jednu z moznosti:\n"
+                "Neplatný IF príkaz!\n\nPouži jednu z možností:\n"
                 "if obstacle down, if obstacle up, if obstacle left, if obstacle right"
                 + error_suffix,
             )
@@ -84,22 +84,22 @@ def validate_text_command(text, line_index, all_lines):
         if line_index == 0:
             return (
                 False,
-                "Prikaz 'break obstacle' musi byt priamo pod IF prikazom." + error_suffix,
+                "Príkaz 'break obstacle' musí byť priamo pod IF príkazom." + error_suffix,
             )
         prev_line = all_lines[line_index - 1].strip().lower()
         if _parse_if_condition(prev_line) is None:
             return (
                 False,
-                "Prikaz 'break obstacle' musi byt priamo pod IF prikazom." + error_suffix,
+                "Príkaz 'break obstacle' musí byť priamo pod IF príkazom." + error_suffix,
             )
         return True, None
 
     if text not in ["up", "down", "left", "right", "end"]:
         return (
             False,
-            "Neplatny prikaz: "
+            "Neplatný príkaz: "
             + text
-            + "\n\nPovolene prikazy:\n"
+            + "\n\nPovolené príkazy:\n"
             + "up, down, left, right, for 2x-6x, "
             + "if obstacle down/up/left/right, break obstacle, end"
             + error_suffix,
@@ -107,7 +107,7 @@ def validate_text_command(text, line_index, all_lines):
 
     if text == "end":
         if _count_for_loops(all_lines, line_index) == 0:
-            return False, f"END bez prislusneho FOR!{error_suffix}"
+            return False, f"END bez príslušného FOR!{error_suffix}"
 
         last_for = None
         for i in range(line_index - 1, -1, -1):
@@ -122,7 +122,7 @@ def validate_text_command(text, line_index, all_lines):
             if not has_commands:
                 return (
                     False,
-                    "FOR cyklus je prazdny!\n\nMedzi FOR a END musi\nbyt aspon jeden prikaz." + error_suffix,
+                    "FOR cyklus je prázdný!\n\nMedzi FOR a END musí\nbyť aspoň jeden príkaz." + error_suffix,
                 )
 
     return True, None
@@ -404,12 +404,12 @@ def handle_text_console_keyboard(event, game_state):
         lines = game_state.text_console_input.split("\n")
         non_empty_lines = [line.strip() for line in lines if line.strip()]
         if len(non_empty_lines) >= 13:
-            error_suffix = "\n\nMozes resetovat konzolu\nalebo vymazat obsah pomocou BACKSPACE."
+            error_suffix = "\n\nMôžeš resetovať konzolu\nalebo vymazať obsah pomocou BACKSPACE."
             game_state.show_error = True
             game_state.error_message = (
                 f"Presiahol si hranicu konzoly!\n\n"
-                f"Maximalny pocet prikazov je 13.\n"
-                f"Tvoj kod ma uz {len(non_empty_lines)} prikazov."
+                f"Maximálny počet príkazov je 13.\n"
+                f"Tvoj kód ma už {len(non_empty_lines)} príkazov."
                 + error_suffix
             )
             return
@@ -474,12 +474,12 @@ def start_text_mode_execution(game_state):
     # Kontrola limitu počtu riadkov príkazov (max 13 riadkov)
     non_empty_lines = [line.strip() for line in lines if line.strip()]
     if len(non_empty_lines) > 13:
-        error_suffix = "\n\nMozes resetovat konzolu\nalebo vymazat obsah pomocou BACKSPACE."
+        error_suffix = "\n\nMôžeš resetovať konzolu\nalebo vymazať obsah pomocou BACKSPACE."
         game_state.show_error = True
         game_state.error_message = (
             f"Presiahol si hranicu konzoly!\n\n"
-            f"Maximalny pocet prikazov je 13.\n"
-            f"Tvoj kod ma {len(non_empty_lines)} prikazov."
+            f"Maximálny počet príkazov je 13.\n"
+            f"Tvoj kód ma {len(non_empty_lines)} príkazov."
             + error_suffix
         )
         return True

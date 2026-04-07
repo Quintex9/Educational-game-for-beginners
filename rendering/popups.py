@@ -78,13 +78,13 @@ def draw_popup(screen, title, lines, button_text="OK", width=500, height=None):
 
 
 def draw_limit_warning_popup(screen):
-    title = "Dosiahnuty limit!"
+    title = "Dosiahnutý limit!"
     lines = [
-        "Konzola je plna.",
-        "Nemozes pridat viac prikazov.",
+        "Konzola je plná.",
+        "Nemôžeš pridať ďalšie príkazy.",
         "",
-        "Mozes zresetovat konzolu",
-        "pomocou tlacidla RESET.",
+        "Môžeš zresetovať konzolu",
+        "pomocou tlačidla RESET.",
     ]
     return draw_popup(screen, title, lines, "OK")
 

@@ -42,15 +42,15 @@ def _draw_console_button(screen, rect, text, font_size, mouse_pos):
     return rect
 
 
-def _get_console_buttons_area(level_config):
+def _get_console_buttons_area(screen, level_config):
     grid_w = level_config["GRID_WIDTH"]
-    console_w = level_config["CONSOLE_WIDTH"]
+    console_w = screen.get_width() - grid_w
     header_h = 70
     return pygame.Rect(grid_w, header_h, console_w, 50)
 
 
-def _console_button_rect(level_config, button_index, total_buttons):
-    area = _get_console_buttons_area(level_config)
+def _console_button_rect(screen, level_config, button_index, total_buttons):
+    area = _get_console_buttons_area(screen, level_config)
     padding = 10
     spacing = 8
     btn_w = (area.width - 2 * padding - (total_buttons - 1) * spacing) // total_buttons
@@ -64,7 +64,7 @@ def draw_start_button(screen, level_config, mouse_pos):
     grid_h = level_config["GRID_HEIGHT"]
     panel_h = level_config["PANEL_HEIGHT"]
     available_left = level_config["GRID_WIDTH"] + 20
-    available_right = level_config["GRID_WIDTH"] + level_config["CONSOLE_WIDTH"] - 20
+    available_right = screen.get_width() - 20
     available_w = max(220, available_right - available_left)
     btn_w = min(340, available_w)
     btn_h = 110
@@ -75,7 +75,7 @@ def draw_start_button(screen, level_config, mouse_pos):
 
 
 def draw_console_buttons_area(screen, level_config, has_mode=False):
-    area = _get_console_buttons_area(level_config)
+    area = _get_console_buttons_area(screen, level_config)
     pygame.draw.rect(screen, HEADER_BG, area)
     pygame.draw.line(screen, CONSOLE_BORDER, (area.x, area.bottom), (area.right, area.bottom), width=2)
 
@@ -83,7 +83,7 @@ def draw_console_buttons_area(screen, level_config, has_mode=False):
 def draw_stars_info_button(screen, level_config, mouse_pos, has_mode=False):
     total = 4 if has_mode else 3
     index = 3 if has_mode else 2
-    rect = _console_button_rect(level_config, index, total)
+    rect = _console_button_rect(screen, level_config, index, total)
 
     hovered = rect.collidepoint(mouse_pos)
     bg_color = (90, 150, 70) if hovered else (70, 130, 50)
@@ -100,18 +100,18 @@ def draw_stars_info_button(screen, level_config, mouse_pos, has_mode=False):
 def draw_menu_button(screen, level_config, mouse_pos, has_mode=False):
     total = 4 if has_mode else 3
     index = 2 if has_mode else 1
-    rect = _console_button_rect(level_config, index, total)
+    rect = _console_button_rect(screen, level_config, index, total)
     return _draw_console_button(screen, rect, "MENU", 16, mouse_pos)
 
 
 def draw_reset_button(screen, level_config, mouse_pos, has_mode=False):
     total = 4 if has_mode else 3
     index = 1 if has_mode else 0
-    rect = _console_button_rect(level_config, index, total)
+    rect = _console_button_rect(screen, level_config, index, total)
     return _draw_console_button(screen, rect, "RESET", 16, mouse_pos)
 
 
 def draw_mode_toggle_button(screen, level_config, mouse_pos, text_mode):
-    rect = _console_button_rect(level_config, 0, 4)
+    rect = _console_button_rect(screen, level_config, 0, 4)
     text = "TEXT" if not text_mode else "DRAG"
-    return _draw_console_button(screen, rect, text, 14, mouse_pos)
+    return _draw_console_button(screen, rect, text, 16, mouse_pos)

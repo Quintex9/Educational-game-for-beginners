@@ -35,16 +35,16 @@ def calculate_stars(game_state):
         return 1
 
     if level_num == 3:
-        if has_if and command_count <= 10 and reset_count == 0:
+        if has_if and command_count <= 12 and reset_count == 0:
             return 3
         if (has_if and command_count <= 15):
             return 2
         return 1
 
     if level_num == 4:
-        if has_for and has_if and command_count <= 12 and reset_count == 0:
+        if has_for and has_if and command_count <= 13 and reset_count == 0:
             return 3
-        if ((has_for or has_if) and command_count <= 18) or (not has_for and not has_if and command_count <= 25):
+        if (has_for and has_if and command_count <= 18) or (has_if and not has_for and command_count <= 25):
             return 2
         return 1
 
@@ -81,49 +81,45 @@ def draw_victory_popup(screen, level_num, next_level_num=None, stars=0):
 
 
 def draw_stars_info_popup(screen, level_num):
-    title = "⭐ Hodnotenie hviezdickami"
+    title = "Hodnotenie hviezdičkami"
 
     if 5 <= level_num <= 8:
         lines = [
-            "⭐ ⭐ ⭐ - Pouzi LEN textovy rezim",
-            "⭐ ⭐ - Pouzi textovy + drag&drop",
-            "⭐ - Pouzi len drag&drop",
-            "",
-            "Tip: Prepni na textovy rezim",
-            "pomocou tlacidla TEXT/DRAG",
+            "⭐ ⭐ ⭐ - Použi LEN textovy rezim",
+            "⭐ ⭐ - Použi textovy + drag & drop",
+            "⭐ - Použi len drag & drop",
         ]
     elif level_num == 1:
         lines = [
-            "⭐ ⭐ ⭐ - <=6 prikazov, 0 resetov",
-            "⭐ ⭐ - <=10 prikazov, <=1 reset",
-            "⭐ - Viac ako 10 prikazov",
+            "⭐ ⭐ ⭐ - najviac 6 príkazov, 0 resetov",
+            "⭐ ⭐ - najviac 10 príkazov a najviac 1 reset",
+            "⭐ - použi viac ako 10 príkazov",
             "",
-            "Tip: Pouzi efektivne riesenie",
+            "Tip: Skús nájsť čo najlepšie riešenie.",
         ]
     elif level_num == 2:
         lines = [
-            "⭐ ⭐ ⭐ - FOR cyklus + <=14 prikazov",
-            "⭐ ⭐ - FOR + <=12 prikazov",
-            "   alebo bez FOR + <=15 prikazov",
-            "⭐ - Viac prikazov",
+            "⭐ ⭐ ⭐ - použi FOR cyklus, najviac 14 príkazov a 0 resetov",
+            "⭐ ⭐ - použi FOR cyklus a najviac 19 príkazov",
+            "   alebo bez FOR cyklu najviac 20 príkazov",
+            "⭐ - použi viac príkazov",
             "",
-            "Tip: Pouzi FOR cyklus!",
+            "Tip: Skús si pomôcť FOR cyklom!",
         ]
     elif level_num == 3:
         lines = [
-            "⭐ ⭐ ⭐ - IF podmienka + <=10 prikazov",
-            "⭐ ⭐ - IF + <=15 prikazov",
-            "   alebo bez IF + <=20 prikazov",
-            "⭐ - Viac prikazov",
+            "⭐ ⭐ ⭐ - použi IF podmienku, najviac 12 príkazov a 0 resetov",
+            "⭐ ⭐ - použi IF podmienku a najviac 15 príkazov",
+            "⭐ - použi viac príkazov",
             "",
-            "Tip: Pouzi IF podmienku!",
+            "Tip: Skús si pomôcť IF podmienkou!",
         ]
     elif level_num == 4:
         lines = [
-            "⭐ ⭐ ⭐ - FOR + IF + <=12 prikazov",
-            "⭐ ⭐ - FOR alebo IF + <=18 prikazov",
-            "   alebo bez FOR/IF + <=25 prikazov",
-            "⭐ - Viac prikazov",
+            "⭐ ⭐ ⭐ - použi FOR cyklus, IF podmienku, najviac 13 príkazov a 0 resetov",
+            "⭐ ⭐ - použi FOR cyklus a IF podmienku a najviac 18 príkazov",
+            "   alebo použi len IF podmienku a najviac 25 príkazov",
+            "⭐ - použi viac príkazov",
             "",
             "Tip: Kombinuj FOR a IF!",
         ]

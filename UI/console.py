@@ -5,7 +5,8 @@ from utils.settings import (CONSOLE_BG, CONSOLE_BORDER, HEADER_BG,
 def draw_console(screen: pygame.Surface, level_config: dict):
     grid_w = level_config["GRID_WIDTH"]
     grid_h = level_config["GRID_HEIGHT"]
-    console_w = level_config["CONSOLE_WIDTH"]
+    # Vždy vyplní zvyšok okna doprava, aby nevznikol pruh
+    console_w = screen.get_width() - grid_w
 
     # Pozícia konzoly 
     x = grid_w

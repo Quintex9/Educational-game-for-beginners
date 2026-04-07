@@ -112,7 +112,8 @@ def draw_panel(screen, level_config):
     panel_h = level_config["PANEL_HEIGHT"]
     grid_h = level_config["GRID_HEIGHT"]
     grid_w = level_config["GRID_WIDTH"]
-    panel_w = grid_w + level_config["CONSOLE_WIDTH"]
+    # Panel pokrýva celú šírku okna, nech je grid akýkoľvek
+    panel_w = screen.get_width()
 
     PANEL_POS = (0, grid_h)
     px, py = PANEL_POS

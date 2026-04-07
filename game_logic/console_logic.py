@@ -2,7 +2,6 @@
 
 from UI.draggable_button import draggableButton
 from utils.settings import (
-    CONSOLE_BUTTON_HEIGHT,
     CONSOLE_BUTTON_WIDTH,
     CONSOLE_LAYOUT_BUTTON_WIDTH,
     CONSOLE_LAYOUT_MAX_INDENT,
@@ -17,25 +16,34 @@ def _calculate_positions(commands, console_rect, indent_levels):
     start_x = console_rect.x + CONSOLE_PADDING
     start_y = console_rect.y + CONSOLE_PADDING
 
-    # Keep column width stable even when wider commands (IF/break obstacle) appear later.
-    layout_button_width = max(CONSOLE_BUTTON_WIDTH, CONSOLE_LAYOUT_BUTTON_WIDTH)
-    layout_indent = max(0, CONSOLE_LAYOUT_MAX_INDENT)
-    column_width = layout_button_width + layout_indent * CONSOLE_INDENT_WIDTH + CONSOLE_COLUMN_SPACING
+    if not commands:
+        return
 
-    current_column = 0
-    row_in_column = 0
+    available_height = console_rect.height - CONSOLE_PADDING * 2
+    max_per_col = max(1, available_height // CONSOLE_SLOT_HEIGHT)
+    total_columns = (len(commands) + max_per_col - 1) // max_per_col
 
+    # Build columns first, then size each column by its real widest button+indent.
+    columns = [[] for _ in range(total_columns)]
     for i, cmd in enumerate(commands):
-        y_pos = start_y + row_in_column * CONSOLE_SLOT_HEIGHT
-        if y_pos + CONSOLE_BUTTON_HEIGHT > console_rect.bottom:
-            current_column += 1
-            row_in_column = 0
-            y_pos = start_y
+        column = i // max_per_col
+        row = i % max_per_col
+        columns[column].append((i, row, cmd))
 
-        x_pos = start_x + indent_levels[i] * CONSOLE_INDENT_WIDTH + current_column * column_width
-        cmd.rect.x = x_pos
-        cmd.rect.y = y_pos
-        row_in_column += 1
+    column_start_x = []
+    next_start_x = start_x
+    for entries in columns:
+        column_start_x.append(next_start_x)
+        content_width = max(
+            indent_levels[idx] * CONSOLE_INDENT_WIDTH + cmd.rect.width for idx, _, cmd in entries
+        )
+        next_start_x += content_width + CONSOLE_COLUMN_SPACING
+
+    for col_idx, entries in enumerate(columns):
+        base_x = column_start_x[col_idx]
+        for idx, row, cmd in entries:
+            cmd.rect.x = base_x + indent_levels[idx] * CONSOLE_INDENT_WIDTH
+            cmd.rect.y = start_y + row * CONSOLE_SLOT_HEIGHT
 
 
 def update_console_indentation(commands, console_rect):
@@ -145,16 +153,16 @@ def validate_for_loops(commands):
                     i += 1
                     break
                 if commands[i].command == "for_start":
-                    return False, "Vnorene cykly nie su povolene!\n\nNemozes pouzit FOR\nv ramci ineho FOR cyklu."
+                    return False, "Vnorené cykly nie sú povolene!\n\nNemožno použiť FOR\nv rámci iného FOR cyklu."
 
                 loop_commands.append(commands[i])
                 i += 1
 
             if not found_end:
-                return False, "FOR cyklus nie je uzavrety!\n\nKazdy FOR cyklus musi\nbyt uzavrety pomocou END."
+                return False, "FOR cyklus nie je uzavretý!\n\nKaždý FOR cyklus musí\nbyť uzavretý pomocou END."
 
             if len(loop_commands) == 0:
-                return False, "FOR cyklus je prazdny!\n\nMedzi FOR a END musi\nbyt aspon jeden prikaz."
+                return False, "FOR cyklus je prázdný!\n\nMedzi FOR a END musí\nbyť aspoň jeden príkaz."
         else:
             i += 1
 
@@ -166,10 +174,10 @@ def validate_for_loops(commands):
         elif cmd.command == "for_end":
             end_count += 1
             if end_count > for_count:
-                return False, "Prilis vela END prikazov!\n\nKazdy END musi mat\nsvoj zodpovedajuci FOR."
+                return False, "Prílis vela END príkazov!\n\nKaždý END musí mať\nsvoj zodpovedajúci FOR."
 
     if for_count != end_count:
-        return False, "Nespravny pocet FOR a END!\n\nPocet FOR a END prikazov\nmusi byt rovnaky."
+        return False, "Nesprávny počet FOR a END!\n\nPočet FOR a END príkazov\nmusí byť rovnaký."
 
     return True, ""
 
