@@ -2,6 +2,7 @@
 
 from UI.star_emoji import draw_star_emoji
 from rendering.popups import draw_popup
+import pygame
 
 
 def calculate_stars(game_state):
@@ -65,19 +66,59 @@ def draw_stars(screen, stars, center_x, y):
 
 
 def draw_victory_popup(screen, level_num, next_level_num=None, stars=0):
-    title = f"Level {level_num} dokonceny!"
+    title = f"Level {level_num} dokončený!"
 
     if next_level_num is not None:
-        lines = ["Gratulujeme!", "Uspesne si dokoncil level.", ""]
+        lines = ["Gratulujeme!", "Úspešne si dokončil level.", ""]
         button_text = f"Level {next_level_num}"
     else:
-        lines = ["Gratulujeme!", "Uspesne si dokoncil vsetky levely!", "", "Hra dokoncena!"]
-        button_text = "OK"
+        lines = ["Gratulujeme!", "Úspešne si dokončil všetky levely!", ""]
+        button_text = None  # bez základného tlačidla, nahradíme dvojicou MENU/KONIEC
 
     popup_rect, button_rect = draw_popup(screen, title, lines, button_text)
-    stars_y = button_rect.y - 50
-    draw_stars(screen, stars, popup_rect.centerx, stars_y)
-    return popup_rect, button_rect
+    
+    # Pre level 8 (posledný level): vykresli aj dvojicu tlačidiel MENU a KONIEC
+    # a vráť ich recty ako tretí prvok (alebo None inde).
+    extra_button_rect = None
+    if next_level_num is None and level_num == 8:
+        button_font = pygame.font.SysFont("Consolas", 20, bold=True)
+        btn_w, btn_h = 140, 45
+        spacing = 24
+        total_w = btn_w * 2 + spacing
+        start_x = popup_rect.centerx - total_w // 2
+        y = popup_rect.bottom - btn_h - 22
+        
+        # MENU tlačidlo (vľavo)
+        menu_rect = pygame.Rect(start_x, y, btn_w, btn_h)
+        # KONIEC tlačidlo (vpravo)
+        quit_rect = pygame.Rect(start_x + btn_w + spacing, y, btn_w, btn_h)
+        
+        mouse_pos = pygame.mouse.get_pos()
+        for rect, text in [(menu_rect, "MENU"), (quit_rect, "KONIEC")]:
+            hovered = rect.collidepoint(mouse_pos)
+            color = (255, 180, 60) if hovered else (255, 160, 40)
+            pygame.draw.rect(screen, color, rect, border_radius=8)
+            pygame.draw.rect(screen, (220, 140, 20), rect, width=3, border_radius=8)
+            txt = button_font.render(text, True, (255, 255, 255))
+            screen.blit(txt, txt.get_rect(center=rect.center))
+        
+        # Použijeme tuple na odovzdanie oboch rectov cez jeden parameter
+        extra_button_rect = (menu_rect, quit_rect)
+        
+        star_h = 38
+        stars_y = y - star_h
+        draw_stars(screen, stars, popup_rect.centerx, stars_y)
+    else:
+        # Vypočítaj pozíciu hviezd
+        text_block_bottom_y = popup_rect.y + 70 + len(lines) * 30
+        default_stars_y = text_block_bottom_y + 10
+        if button_rect is not None:
+            stars_y = min(button_rect.y - 55, default_stars_y)
+        else:
+            stars_y = default_stars_y
+        draw_stars(screen, stars, popup_rect.centerx, stars_y)
+    
+    return popup_rect, button_rect, extra_button_rect
 
 
 def draw_stars_info_popup(screen, level_num):

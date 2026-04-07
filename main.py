@@ -62,6 +62,7 @@ while running:
             popup_button_rect,
             mode_toggle_button_rect,
             stars_info_button_rect,
+            popup_extra_buttons,
         ) = render_level(window.screen, game_state, level_config, mouse_pos)
 
     # Spracovanie eventov
@@ -88,6 +89,7 @@ while running:
                     popup_button_rect,
                     mode_toggle_button_rect,
                     stars_info_button_rect,
+                    popup_extra_buttons,
                 )
 
     pygame.display.flip()

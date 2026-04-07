@@ -24,9 +24,13 @@ def draw_popup(screen, title, lines, button_text="OK", width=500, height=None):
         line_width = line_font.size(line)[0]
         max_line_width = max(max_line_width, line_width)
 
-    button_text_width = button_font.size(button_text)[0]
-    button_width = max(120, button_text_width + 20)
-    max_content_width = max(title_width, max_line_width, button_width)
+    # Šírku tlačidla započítaj len ak má byť zobrazené
+    if button_text is not None:
+        button_text_width = button_font.size(button_text)[0]
+        button_width = max(120, button_text_width + 20)
+        max_content_width = max(title_width, max_line_width, button_width)
+    else:
+        max_content_width = max(title_width, max_line_width)
 
     if width == 500:
         width = max(min_width, max_content_width + padding * 2)
@@ -36,8 +40,8 @@ def draw_popup(screen, title, lines, button_text="OK", width=500, height=None):
     if height is None:
         title_height = 50
         line_height = 30
-        button_height = 50
-        height = title_height + len(lines) * line_height + button_height + padding * 2
+        extra_bottom = 70 if button_text is not None else 40
+        height = title_height + len(lines) * line_height + extra_bottom + padding
 
     popup_x = (screen_width - width) // 2
     popup_y = (screen_height - height) // 2
@@ -58,21 +62,23 @@ def draw_popup(screen, title, lines, button_text="OK", width=500, height=None):
         screen.blit(line_surf, line_rect)
         y_offset += 30
 
-    button_width = 120
-    button_height = 45
-    button_x = popup_rect.centerx - button_width // 2
-    button_y = popup_rect.bottom - button_height - 20
-    button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
+    button_rect = None
+    if button_text is not None:
+        button_width = 120
+        button_height = 45
+        button_x = popup_rect.centerx - button_width // 2
+        button_y = popup_rect.bottom - button_height - 20
+        button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
 
-    mouse_pos = pygame.mouse.get_pos()
-    hovered = button_rect.collidepoint(mouse_pos)
-    button_color = (255, 180, 60) if hovered else (255, 160, 40)
-    pygame.draw.rect(screen, button_color, button_rect, border_radius=8)
-    pygame.draw.rect(screen, (220, 140, 20), button_rect, width=3, border_radius=8)
+        mouse_pos = pygame.mouse.get_pos()
+        hovered = button_rect.collidepoint(mouse_pos)
+        button_color = (255, 180, 60) if hovered else (255, 160, 40)
+        pygame.draw.rect(screen, button_color, button_rect, border_radius=8)
+        pygame.draw.rect(screen, (220, 140, 20), button_rect, width=3, border_radius=8)
 
-    button_text_surf = button_font.render(button_text, True, (255, 255, 255))
-    button_text_rect = button_text_surf.get_rect(center=button_rect.center)
-    screen.blit(button_text_surf, button_text_rect)
+        button_text_surf = button_font.render(button_text, True, (255, 255, 255))
+        button_text_rect = button_text_surf.get_rect(center=button_rect.center)
+        screen.blit(button_text_surf, button_text_rect)
 
     return popup_rect, button_rect
 

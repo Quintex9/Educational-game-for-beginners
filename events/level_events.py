@@ -126,7 +126,7 @@ def _handle_reset_click(game_state, reset_button_rect):
     game_state.error_message = ""
     return True
 
-def handle_level_events(event, game_state, console_rect, button_rect, reset_button_rect, menu_button_rect, dragging_button, popup_rect=None, popup_button_rect=None, mode_toggle_button_rect=None, stars_info_button_rect=None):
+def handle_level_events(event, game_state, console_rect, button_rect, reset_button_rect, menu_button_rect, dragging_button, popup_rect=None, popup_button_rect=None, mode_toggle_button_rect=None, stars_info_button_rect=None, popup_extra_buttons=None):
     # Spracuje eventy v level stave
     
     # Pre levely 5-8 v textovom režime - textová konzola
@@ -140,6 +140,16 @@ def handle_level_events(event, game_state, console_rect, button_rect, reset_butt
         
         if popup_button_rect and popup_button_rect.collidepoint(mx, my):
             if _handle_popup_button_click(game_state, popup_button_rect):
+                return dragging_button, None
+        
+        # Podpora extra tlačidiel v popup okne ( MENU/KONIEC po leveli 8)
+        if popup_extra_buttons and isinstance(popup_extra_buttons, tuple) and len(popup_extra_buttons) == 2:
+            menu_btn, quit_btn = popup_extra_buttons
+            if menu_btn.collidepoint(mx, my):
+                game_state.reset_to_menu()
+                return None, None
+            if quit_btn.collidepoint(mx, my):
+                pygame.event.post(pygame.event.Event(pygame.QUIT))
                 return dragging_button, None
         
         # Ak je popup zobrazený, ignoruj ostatné kliknutia

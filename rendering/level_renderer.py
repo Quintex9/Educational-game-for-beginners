@@ -290,7 +290,16 @@ def render_level(screen, game_state, level_config, mouse_pos):
         (game_state.show_stars_info, lambda: draw_stars_info_popup(screen, level_num)),
         (game_state.show_level_info, lambda: draw_level_info_popup(screen, level_num))
     ]
-    popup_rect, popup_button_rect = next((f() for condition, f in popup_funcs if condition), (None, None))
+    popup_result = next((f() for condition, f in popup_funcs if condition), None)
+    if popup_result is None:
+        popup_rect, popup_button_rect, extra_popup_buttons = None, None, None
+    else:
+        # Podpora nového návratu z draw_victory_popup: (popup, btn1, (btn_menu, btn_quit))
+        if len(popup_result) == 3:
+            popup_rect, popup_button_rect, extra_popup_buttons = popup_result
+        else:
+            popup_rect, popup_button_rect = popup_result
+            extra_popup_buttons = None
     
-    # Vracia pôvodný console_rect (celá oblasť) pre event handlery
-    return commands_console_rect, button_rect, reset_button_rect, menu_button_rect, popup_rect, popup_button_rect, mode_toggle_button_rect, stars_info_button_rect
+    # Vracia pôvodný console_rect (celá oblasť) pre event handlery + prípadné extra tlačidlá
+    return commands_console_rect, button_rect, reset_button_rect, menu_button_rect, popup_rect, popup_button_rect, mode_toggle_button_rect, stars_info_button_rect, extra_popup_buttons
