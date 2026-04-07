@@ -61,7 +61,7 @@ Používajú sa najmä tieto klávesy:
 
 ## Štruktúra levelov
 
-![Rozdelenie levelov do skupín](Menu2.png)
+![Rozdelenie levelov do skupín](screenshots/Menu2.png)
 
 ### Levely 1–4
 Tieto levely sú zamerané na skladanie riešenia pomocou blokov príkazov.
@@ -75,7 +75,7 @@ Hráč postupne pracuje s týmito príkazmi:
 - `FOR`
 - `IF`
 
-![Rozdelenie levelov do skupín](Levely1-4.png)
+![Rozdelenie levelov do skupín](screenshots/Levely1-4.png)
 
 ### Levely 5–8
 V pokročilejších leveloch hra začína v **textovej konzole**.  
@@ -112,7 +112,7 @@ kde `<dir>` môže predstavovať smer:
 
 ---
 
-![Rozdelenie levelov do skupín](Levely5-8.png)
+![Rozdelenie levelov do skupín](screenshots/Levely5-8.png)
 
 ## Hodnotenie
 
@@ -142,4 +142,4 @@ V leveloch **5–8** platí:
 
 Hra používa pevnú veľkosť okna, aby zostalo zachované správne rozloženie používateľského rozhrania.
 
-![Rozdelenie levelov do skupín](Level.png)
+![Rozdelenie levelov do skupín](screenshots/Level.png)
